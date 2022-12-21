@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.15.2",
+    "libraryName": "my-links",
+    "libraryId": "e8abf931-c48a-4ba4-90bf-9d2a72a818c2",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "my-links",
+    "solutionShortDescription": "my-links description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
