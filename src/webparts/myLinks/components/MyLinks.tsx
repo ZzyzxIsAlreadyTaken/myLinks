@@ -68,7 +68,8 @@ const MyLinks = (props:IMyLinksProps) =>{
     {props.listGuid ? myLinksItems.map((o:IMYLINKS,index:number) =>{
       return (
         <div key={index}>
-          {o.Id} {o.Title} <Icon iconName={o.Icon}></Icon> {o.Link}
+          {/* {o.Id} {o.Title} <Icon iconName={o.Icon}></Icon> {o.Link} */}
+          <Icon iconName={o.Icon}></Icon> <a href={o.Link}>{o.Title}</a> 
         </div> 
       )
     }) :

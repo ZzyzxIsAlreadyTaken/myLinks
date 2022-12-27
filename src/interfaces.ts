@@ -1,7 +1,7 @@
 export interface IMYLINKS {
     Id: number;
     Title: string;
-    Link: [];
+    Link: string;
     Icon: string;  
     openinnewtab: boolean;
 }
