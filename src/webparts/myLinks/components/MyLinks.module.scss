@@ -34,6 +34,6 @@
 }
 
 .button {
-  // background-color: "[theme: themePrimary, default: #0078d7]";
-  background-color: green;
+  // background-color: "[theme: themeTertiary, default: gray]";
+  border-color: "[theme: themePrimary, default: gray]";
 }

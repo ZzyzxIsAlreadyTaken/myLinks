@@ -3,10 +3,6 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 
 export interface IMyLinksProps {
   description: string;
-  isDarkTheme: boolean;
-  environmentMessage: string;
-  hasTeamsContext: boolean;
-  userDisplayName: string;
   context: WebPartContext;
   listGuid: string;
   title: string;

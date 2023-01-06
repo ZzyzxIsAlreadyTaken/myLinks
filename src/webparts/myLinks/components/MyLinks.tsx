@@ -9,12 +9,18 @@ import { getSP } from '../../../pnpjsConfig';
 import { Icon, IIconProps } from '@fluentui/react';
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
-// import { Button} from '@fluentui/react-components';
 import { ActionButton } from 'office-ui-fabric-react/lib/Button';
+import { MYModal } from './MyLinksModal';
 
 const addLinkIcon: IIconProps = { iconName: 'AddLink' };
 
+
 const MyLinks = (props:IMyLinksProps) =>{
+
+  function buttonClick(): void {
+    alert('Hello');
+    console.log('Hei');
+  }
 
   const LOG_SOURCE = 'MyLinks Webpart';
   const LIST_NAME = 'mylinks';
@@ -60,16 +66,15 @@ const MyLinks = (props:IMyLinksProps) =>{
               title={props.title}
               updateProperty={props.updateProperty} />
              
-              <br />
-              <ActionButton className='button' shape='rounded' iconProps={addLinkIcon}>Add link</ActionButton>
-              <br />
+              <ActionButton className={`${styles.button} ms-fontColor-black`} shape='rounded' iconProps={addLinkIcon} onClick={() => MYModal()}>Ny lenke</ActionButton>
+              <h2>Lenke</h2>
     </>
      : ""}
     {props.listGuid ? myLinksItems.map((o:IMYLINKS,index:number) =>{
       return (
         <div key={index}>
-          {/* {o.Id} {o.Title} <Icon iconName={o.Icon}></Icon> {o.Link} */}
-          <Icon iconName={o.Icon}></Icon> <a href={o.Link}>{o.Title}</a> 
+          <Icon iconName={o.Icon}></Icon>
+          {o.openinnewtab ? <> <a href={o.Link} rel="noreferrer" target="_blank">{o.Title}</a></>: <> <a href={o.Link} rel="noreferrer" target="_self">{o.Title}</a></> }
         </div> 
       )
     }) :
@@ -82,6 +87,7 @@ const MyLinks = (props:IMyLinksProps) =>{
         />}
     </>
   )
+  
 }
 
 export default MyLinks
