@@ -12,12 +12,19 @@ import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 import { ActionButton } from 'office-ui-fabric-react/lib/Button';
 import { MYModal } from './MyLinksModal';
 
+import { DefaultButton, IconButton } from "@fluentui/react/lib/Button";
+import { useId, useBoolean } from "@fluentui/react-hooks";
+import { Modal } from 'office-ui-fabric-react';
+
 const addLinkIcon: IIconProps = { iconName: 'AddLink' };
+const addEditIcon: IIconProps = { iconName: 'Edit' };
+const addDeleteIcon: IIconProps = { iconName: 'Delete' };
+const cancel: IIconProps = { iconName: 'Cancel' };
 
 
 const MyLinks = (props:IMyLinksProps) =>{
 
-  function buttonClick(): void {
+  function editIcon(): void {
     alert('Hello');
     console.log('Hei');
   }
@@ -48,6 +55,12 @@ const MyLinks = (props:IMyLinksProps) =>{
 
   }
 
+  const [isModalOpen, { setTrue: showModal, setFalse: hideModal }] = useBoolean(
+    false
+  );
+
+  const titleId = useId("title");
+
   useEffect(() => {
     if(props.listGuid && props.listGuid != ''){
     getMyLinksItems();
@@ -55,6 +68,7 @@ const MyLinks = (props:IMyLinksProps) =>{
   },[props])
 
   return(
+    
     // <>
     // <h1>Hello World</h1>
     // <pre>{JSON.stringify(myLinksItems,null,2)}</pre>
@@ -65,9 +79,32 @@ const MyLinks = (props:IMyLinksProps) =>{
        <WebPartTitle displayMode={props.displayMode}
               title={props.title}
               updateProperty={props.updateProperty} />
-             
-              <ActionButton className={`${styles.button} ms-fontColor-black`} shape='rounded' iconProps={addLinkIcon} onClick={() => MYModal()}>Ny lenke</ActionButton>
-              <h2>Lenke</h2>
+              <ActionButton className={`${styles.button} ms-fontColor-black`} shape='rounded' iconProps={addEditIcon} onClick={showModal}>Rediger lenker</ActionButton>
+               {/* <DefaultButton onClick={showModal} text="Open Modal" /> */}
+               <Modal
+        titleAriaId={titleId}
+        isOpen={isModalOpen}
+        onDismiss={hideModal}
+        isBlocking={false}
+        forceFocusInsideTrap={false}
+        containerClassName={'x'}
+      > 
+      <IconButton iconProps={cancel} onClick={hideModal}></IconButton>
+      <h3>Rediger mine lenker</h3>
+      <ActionButton iconProps={addLinkIcon}>Ny lenke</ActionButton>
+        {myLinksItems.map((o:IMYLINKS,index:number) =>{
+      return (
+        <div key={index}>
+          <Icon iconName={o.Icon}></Icon>
+          {o.Title}
+          <IconButton iconProps={addEditIcon} onClick={editIcon}></IconButton>
+          <IconButton iconProps={addDeleteIcon}></IconButton>
+        </div> 
+      )
+    })}
+        </Modal>
+              
+              {/* <h2>Lenke</h2> */}
     </>
      : ""}
     {props.listGuid ? myLinksItems.map((o:IMYLINKS,index:number) =>{
