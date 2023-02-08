@@ -5,6 +5,7 @@ export interface IMyLinksProps {
   description: string;
   context: WebPartContext;
   listGuid: string;
+  listGuid2: string;
   title: string;
   displayMode: DisplayMode;
   updateProperty: (value: string) => void;

@@ -21,6 +21,7 @@ export interface IMyLinksWebPartProps {
   description: string;
   list: string;
   title: string;
+  list2: string;
 }
 
 export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPartProps> {
@@ -36,7 +37,8 @@ export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPar
         displayMode: this.displayMode,
         updateProperty: (value: string) => {
         this.properties.title = value;
-        }
+        },
+        listGuid2: this.properties.list2
       }
     );
 
@@ -47,9 +49,6 @@ export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPar
     ReactDom.unmountComponentAtNode(this.domElement);
   }
 
-  protected get dataVersion(): Version {
-    return Version.parse('1.0');
-  }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
@@ -66,8 +65,21 @@ export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPar
                   label: strings.DescriptionFieldLabel
                 }),
                 PropertyFieldListPicker('list', {
-                  label: 'Select a list',
+                  label: 'Select link list',
                   selectedList: this.properties.list,
+                  includeHidden: false,
+                  orderBy: PropertyFieldListPickerOrderBy.Title,
+                  disabled: false,
+                  onPropertyChange: this.onPropertyPaneFieldChanged.bind(this),
+                  properties: this.properties,
+                  context: this.context as any,
+                  onGetErrorMessage: null,
+                  deferredValidationTime: 0,
+                  key: 'listPickerFieldId'
+                }),
+                PropertyFieldListPicker('list2', {
+                  label: 'Select admin list',
+                  selectedList: this.properties.list2,
                   includeHidden: false,
                   orderBy: PropertyFieldListPickerOrderBy.Title,
                   disabled: false,
