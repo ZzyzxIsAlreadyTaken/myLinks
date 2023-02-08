@@ -4,7 +4,7 @@ import { IMyLinksProps } from './IMyLinksProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { SPFI } from '@pnp/sp';
 import { useEffect, useState} from 'react';
-import { IMYLINKS } from '../../../interfaces'; 
+import { IMYLINKS, IMYADMINLINKS } from '../../../interfaces'; 
 import { getSP } from '../../../pnpjsConfig';
 import { Icon, IIconProps } from '@fluentui/react';
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
@@ -34,6 +34,7 @@ const MyLinks = (props:IMyLinksProps) =>{
 
   let _sp:SPFI = getSP(props.context);
 
+  //Mylinks Items
   const [myLinksItems,setMyLinksItems] = useState<IMYLINKS[]>([])
 
   const getMyLinksItems = async () => {
@@ -55,6 +56,30 @@ const MyLinks = (props:IMyLinksProps) =>{
 
   }
 
+  //Myadminlinks items
+  const [myAdminLinksItems,setMyAdminLinksItems] = useState<IMYADMINLINKS[]>([])
+
+  const getMyAdminLinksItems = async () => {
+    
+    console.log('context',_sp);
+    const items = _sp.web.lists.getById(props.listGuid2).items.select().orderBy('Title',true)();
+
+    console.log('mylinksAdmin Items',items);
+
+    setMyAdminLinksItems((await items).map((item:any) => {
+      return{
+        Id: item.ID,
+        Title: item.Title,
+        Icon: item.Icon,
+        Link: item.Link.Url,
+        openinnewtab: item.openinnewtab 
+      }
+    }))
+
+  }
+
+  //
+
   const [isModalOpen, { setTrue: showModal, setFalse: hideModal }] = useBoolean(
     false
   );
@@ -67,6 +92,12 @@ const MyLinks = (props:IMyLinksProps) =>{
   }
   },[props])
 
+  useEffect(() => {
+    if(props.listGuid2 && props.listGuid2 != ''){
+    getMyAdminLinksItems();
+  }
+  },[props])
+
   return(
     
     // <>
@@ -74,7 +105,7 @@ const MyLinks = (props:IMyLinksProps) =>{
     // <pre>{JSON.stringify(myLinksItems,null,2)}</pre>
     // </>
     <>
-    {props.listGuid ?
+    {props.listGuid && props.listGuid2 ?
     <>
        <WebPartTitle displayMode={props.displayMode}
               title={props.title}
@@ -107,7 +138,18 @@ const MyLinks = (props:IMyLinksProps) =>{
               {/* <h2>Lenke</h2> */}
     </>
      : ""}
-    {props.listGuid ? myLinksItems.map((o:IMYLINKS,index:number) =>{
+     {props.listGuid && props.listGuid2 ? myAdminLinksItems.map((o:IMYADMINLINKS,index:number) =>{
+      return (
+        <>
+        <h2>Adminlinks</h2>
+        <div key={index}>
+          <Icon iconName={o.Icon}></Icon>
+          {o.openinnewtab ? <> <a href={o.Link} rel="noreferrer" target="_blank">{o.Title}</a></>: <> <a href={o.Link} rel="noreferrer" target="_self">{o.Title}</a></> }
+        </div> 
+        </>
+      )
+     }): ""}
+    {props.listGuid && props.listGuid2 ? myLinksItems.map((o:IMYLINKS,index:number) =>{
       return (
         <div key={index}>
           <Icon iconName={o.Icon}></Icon>
