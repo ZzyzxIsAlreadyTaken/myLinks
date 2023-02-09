@@ -37,3 +37,16 @@
   // background-color: "[theme: themeTertiary, default: gray]";
   border-color: "[theme: themePrimary, default: gray]";
 }
+
+//Modal Dialog
+.modalWrapper{
+  padding: 1rem;
+}
+
+.modalLinkTitle{
+  margin-left: 10px;
+}
+
+.deleteInfo{
+  color: red;
+}

@@ -63,7 +63,12 @@ export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPar
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
-                }),
+                })
+              ]
+            },
+            {
+              groupName: 'Lister',
+              groupFields: [
                 PropertyFieldListPicker('list', {
                   label: 'Select link list',
                   selectedList: this.properties.list,

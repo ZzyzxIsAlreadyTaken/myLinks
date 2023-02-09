@@ -15,6 +15,7 @@ import { MYModal } from './MyLinksModal';
 import { DefaultButton, IconButton } from "@fluentui/react/lib/Button";
 import { useId, useBoolean } from "@fluentui/react-hooks";
 import { Modal } from 'office-ui-fabric-react';
+import { Item } from '@pnp/sp/items';
 
 const addLinkIcon: IIconProps = { iconName: 'AddLink' };
 const addEditIcon: IIconProps = { iconName: 'Edit' };
@@ -22,12 +23,39 @@ const addDeleteIcon: IIconProps = { iconName: 'Delete' };
 const cancel: IIconProps = { iconName: 'Cancel' };
 
 
+
 const MyLinks = (props:IMyLinksProps) =>{
 
-  function editIcon(): void {
-    alert('Hello');
-    console.log('Hei');
+  const [DeleteInfo, setDeleteInfo] = useState([]);
+
+  function getEditItem(id:number){
+    // let modalItemsList = _sp.web.lists.getById(props.listGuid);
+    // let item = modalItemsList.items.getById(id)()
+    console.log(id)
   }
+
+  function deleteItem(id:number, title:string): void{
+    // let modalItemsList = _sp.web.lists.getById(props.listGuid);
+    // let item = modalItemsList.items.getById(id)()
+    const list = _sp.web.lists.getById(props.listGuid)
+    // list.items.getById(id).delete();
+    // alert(title + "is deleted");
+    console.log(myLinksItems)
+    {myLinksItems.map(item => (
+          setMyLinksItems(
+            myLinksItems.filter(a =>
+              a.Id !== id
+            )
+          )
+        ))}
+      let deleteInfoTXT = "Du har slettet: " + title
+      setDeleteInfo([deleteInfoTXT]);
+  }
+
+       
+     
+    
+  
 
   const LOG_SOURCE = 'MyLinks Webpart';
   const LIST_NAME = 'mylinks';
@@ -70,7 +98,6 @@ const MyLinks = (props:IMyLinksProps) =>{
       return{
         Id: item.ID,
         Title: item.Title,
-        Icon: item.Icon,
         Link: item.Link.Url,
         openinnewtab: item.openinnewtab 
       }
@@ -110,8 +137,8 @@ const MyLinks = (props:IMyLinksProps) =>{
        <WebPartTitle displayMode={props.displayMode}
               title={props.title}
               updateProperty={props.updateProperty} />
-              <ActionButton className={`${styles.button} ms-fontColor-black`} shape='rounded' iconProps={addEditIcon} onClick={showModal}>Rediger lenker</ActionButton>
-               {/* <DefaultButton onClick={showModal} text="Open Modal" /> */}
+              <ActionButton className={`${styles.button} ms-fontColor-black`} shape='rounded' iconProps={addEditIcon} onClick={()=> {showModal(); setDeleteInfo([""])}}>Rediger lenker</ActionButton>
+              <br /><strong>Adminlinks</strong>
                <Modal
         titleAriaId={titleId}
         isOpen={isModalOpen}
@@ -121,34 +148,37 @@ const MyLinks = (props:IMyLinksProps) =>{
         containerClassName={'x'}
       > 
       <IconButton iconProps={cancel} onClick={hideModal}></IconButton>
+      <div className={styles.modalWrapper}>
       <h3>Rediger mine lenker</h3>
       <ActionButton iconProps={addLinkIcon}>Ny lenke</ActionButton>
         {myLinksItems.map((o:IMYLINKS,index:number) =>{
       return (
         <div key={index}>
           <Icon iconName={o.Icon}></Icon>
-          {o.Title}
-          <IconButton iconProps={addEditIcon} onClick={editIcon}></IconButton>
-          <IconButton iconProps={addDeleteIcon}></IconButton>
+          <span className={styles.modalLinkTitle}>{o.Title}</span>
+          <IconButton iconProps={addEditIcon} onClick={() => getEditItem(o.Id)}></IconButton>
+          <IconButton iconProps={addDeleteIcon} onClick={() => deleteItem(o.Id, o.Title)}></IconButton>
         </div> 
       )
     })}
+      <span className={styles.deleteInfo}>{DeleteInfo}</span>
+      </div>
         </Modal>
               
-              {/* <h2>Lenke</h2> */}
+          
     </>
      : ""}
+     {/* Adminlinks */}
      {props.listGuid && props.listGuid2 ? myAdminLinksItems.map((o:IMYADMINLINKS,index:number) =>{
       return (
-        <>
-        <h2>Adminlinks</h2>
         <div key={index}>
-          <Icon iconName={o.Icon}></Icon>
+          <Icon iconName="Link"></Icon>
           {o.openinnewtab ? <> <a href={o.Link} rel="noreferrer" target="_blank">{o.Title}</a></>: <> <a href={o.Link} rel="noreferrer" target="_self">{o.Title}</a></> }
         </div> 
-        </>
       )
      }): ""}
+     {/* My links */}
+    {props.listGuid && props.listGuid2 ? <strong>Egendefinerte lenker</strong> : ""}
     {props.listGuid && props.listGuid2 ? myLinksItems.map((o:IMYLINKS,index:number) =>{
       return (
         <div key={index}>
