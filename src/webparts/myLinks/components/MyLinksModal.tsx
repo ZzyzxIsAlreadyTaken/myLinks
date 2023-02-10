@@ -22,8 +22,7 @@ return(
  isOpen={isModalOpen}
  onDismiss={ExitHandler}
  isBlocking={true}
- containerClassName={"modalbox"}
- className={styles.modalDia}>
+ containerClassName={"modalbox"}>
 </Modal>
 )
 }

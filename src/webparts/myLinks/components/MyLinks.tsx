@@ -156,7 +156,7 @@ const MyLinks = (props:IMyLinksProps) =>{
         onDismiss={hideModal}
         isBlocking={false}
         forceFocusInsideTrap={false}
-        containerClassName={'x'}
+        containerClassName={styles.modalStyles}
       > 
       <IconButton iconProps={cancel} onClick={hideModal}></IconButton>
       <div className={styles.modalWrapper}>
@@ -169,7 +169,7 @@ const MyLinks = (props:IMyLinksProps) =>{
           <span className={styles.modalLinkTitle}>{o.Title}</span>
           <IconButton iconProps={addEditIcon} onClick={() => getEditItem(o.Id, index)}></IconButton>
           <IconButton iconProps={addDeleteIcon} onClick={() => deleteItem(o.Id, o.Title)}></IconButton>
-          {o.edit ? <div><div>Edit</div><Dropdown label='Ikon' options={dropDownOptions}></Dropdown><TextField label='Tittel' defaultValue={o.Title}></TextField><TextField label='Url' defaultValue={o.Link}></TextField><Checkbox label='Kan åpnes i nytt vindu' checked={o.openinnewtab}></Checkbox><PrimaryButton>Save</PrimaryButton><DefaultButton>Cancel</DefaultButton></div> : ""}
+          {o.edit ? <div className={styles.editForm}><div className={styles.editFields}><Dropdown label='Ikon' options={dropDownOptions} defaultValue={o.Icon}></Dropdown></div><div className={styles.editFields}><TextField label='Tittel' defaultValue={o.Title} className={styles.editFields}></TextField></div><div className={styles.editFields}><TextField label='Url' defaultValue={o.Link} className={styles.editFields}></TextField></div><div className={styles.editFields}><Checkbox label='Kan åpnes i nytt vindu' checked={o.openinnewtab}></Checkbox></div><div className={styles.editFields}><PrimaryButton>Save</PrimaryButton></div><div className={styles.editFields}><DefaultButton>Cancel</DefaultButton></div></div> : ""}
         </div> 
       )
     })}
