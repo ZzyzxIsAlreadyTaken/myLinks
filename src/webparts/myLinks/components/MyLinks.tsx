@@ -6,32 +6,44 @@ import { SPFI } from '@pnp/sp';
 import { useEffect, useState} from 'react';
 import { IMYLINKS, IMYADMINLINKS } from '../../../interfaces'; 
 import { getSP } from '../../../pnpjsConfig';
-import { Icon, IIconProps } from '@fluentui/react';
+import { Icon, IIconProps, PrimaryButton } from '@fluentui/react';
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 import { ActionButton } from 'office-ui-fabric-react/lib/Button';
-import { MYModal } from './MyLinksModal';
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 
 import { DefaultButton, IconButton } from "@fluentui/react/lib/Button";
 import { useId, useBoolean } from "@fluentui/react-hooks";
-import { Modal } from 'office-ui-fabric-react';
+import { Checkbox, Modal, Dropdown, TextField, DropdownMenuItemType, IDropdownOption } from 'office-ui-fabric-react';
 import { Item } from '@pnp/sp/items';
+
+initializeIcons();
 
 const addLinkIcon: IIconProps = { iconName: 'AddLink' };
 const addEditIcon: IIconProps = { iconName: 'Edit' };
 const addDeleteIcon: IIconProps = { iconName: 'Delete' };
 const cancel: IIconProps = { iconName: 'Cancel' };
 
-
+const dropDownOptions: IDropdownOption[] = [  { key: 'Header', text: 'Options', itemType: DropdownMenuItemType.Header },  { key: 'A', text: 'Option a', data: { icon: 'Memo' } },  { key: 'B', text: 'Option b', data: { icon: 'Print' } },  { key: 'C', text: 'Option c', data: { icon: 'ShoppingCart' } },  { key: 'D', text: 'Option d', data: { icon: 'Train' } },  { key: 'E', text: 'Option e', data: { icon: 'Repair' } },  { key: 'divider_2', text: '-', itemType: DropdownMenuItemType.Divider },  { key: 'Header2', text: 'More options', itemType: DropdownMenuItemType.Header },  { key: 'F', text: 'Option f', data: { icon: 'Running' } },  { key: 'G', text: 'Option g', data: { icon: 'EmojiNeutral' } },  { key: 'H', text: 'Option h', data: { icon: 'ChatInviteFriend' } },  { key: 'I', text: 'Option i', data: { icon: 'SecurityGroup' } },  { key: 'J', text: 'Option j', data: { icon: 'AddGroup' } },];
 
 const MyLinks = (props:IMyLinksProps) =>{
 
   const [DeleteInfo, setDeleteInfo] = useState([]);
+  
 
-  function getEditItem(id:number){
+
+  function getEditItem(id:number,index:number){
     // let modalItemsList = _sp.web.lists.getById(props.listGuid);
     // let item = modalItemsList.items.getById(id)()
     console.log(id)
+    console.log("Endret")
+    // Eivind
+    const newMyLinks = [...myLinksItems.map(item => {
+      item.edit = false
+      return item
+    } )];
+    newMyLinks[index].edit = true
+    setMyLinksItems(newMyLinks)
   }
 
   function deleteItem(id:number, title:string): void{
@@ -39,8 +51,6 @@ const MyLinks = (props:IMyLinksProps) =>{
     // let item = modalItemsList.items.getById(id)()
     const list = _sp.web.lists.getById(props.listGuid)
     // list.items.getById(id).delete();
-    // alert(title + "is deleted");
-    console.log(myLinksItems)
     {myLinksItems.map(item => (
           setMyLinksItems(
             myLinksItems.filter(a =>
@@ -78,7 +88,8 @@ const MyLinks = (props:IMyLinksProps) =>{
         Title: item.Title,
         Icon: item.Icon,
         Link: item.Link.Url,
-        openinnewtab: item.openinnewtab 
+        openinnewtab: item.openinnewtab, 
+        edit: false
       }
     }))
 
@@ -156,8 +167,9 @@ const MyLinks = (props:IMyLinksProps) =>{
         <div key={index}>
           <Icon iconName={o.Icon}></Icon>
           <span className={styles.modalLinkTitle}>{o.Title}</span>
-          <IconButton iconProps={addEditIcon} onClick={() => getEditItem(o.Id)}></IconButton>
+          <IconButton iconProps={addEditIcon} onClick={() => getEditItem(o.Id, index)}></IconButton>
           <IconButton iconProps={addDeleteIcon} onClick={() => deleteItem(o.Id, o.Title)}></IconButton>
+          {o.edit ? <div><div>Edit</div><Dropdown label='Ikon' options={dropDownOptions}></Dropdown><TextField label='Tittel' defaultValue={o.Title}></TextField><TextField label='Url' defaultValue={o.Link}></TextField><Checkbox label='Kan åpnes i nytt vindu' checked={o.openinnewtab}></Checkbox><PrimaryButton>Save</PrimaryButton><DefaultButton>Cancel</DefaultButton></div> : ""}
         </div> 
       )
     })}

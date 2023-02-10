@@ -1,6 +1,7 @@
 import { Modal } from "office-ui-fabric-react";
 import * as React from "react";
 import { useId, useBoolean } from '@fluentui/react-hooks';
+import styles from './MyLinks.module.scss';
 
 export const MYModal = () => {
     const [isModalOpen, { setTrue: showModal, setFalse: hideModal }] = useBoolean(false);
@@ -21,7 +22,8 @@ return(
  isOpen={isModalOpen}
  onDismiss={ExitHandler}
  isBlocking={true}
- containerClassName={"modalbox"}>
+ containerClassName={"modalbox"}
+ className={styles.modalDia}>
 </Modal>
 )
 }
