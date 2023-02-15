@@ -21,7 +21,7 @@
     "@pnp/graph": "^3.10.0",
     "@pnp/logging": "^3.10.0",
     "@pnp/sp": "^3.10.0",
-    "@pnp/spfx-controls-react": "^1.12.0",
+    "@pnp/spfx-controls-react": "1.21.3",
     "@pnp/spfx-property-controls": "^2.7.0",
     "office-ui-fabric-react": "7.185.7",
     "react": "16.13.1",

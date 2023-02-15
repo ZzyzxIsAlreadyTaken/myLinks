@@ -23,6 +23,7 @@ import {
   IDropdownOption,
 } from "office-ui-fabric-react";
 import { Item } from "@pnp/sp/items";
+import { IconPicker } from '@pnp/spfx-controls-react/lib/IconPicker';
 
 initializeIcons();
 
@@ -32,7 +33,7 @@ const addDeleteIcon: IIconProps = { iconName: "Delete" };
 const cancel: IIconProps = { iconName: "Cancel" };
 
 const dropDownOptions: IDropdownOption[] = [
-  { key: "Header", text: "Options", itemType: DropdownMenuItemType.Header },
+  { key: "Icons", text: "Options", itemType: DropdownMenuItemType.Header },
   { key: "A", text: "Option a", data: { icon: "Memo" } },
   { key: "B", text: "Option b", data: { icon: "Print" } },
   { key: "C", text: "Option c", data: { icon: "ShoppingCart" } },
@@ -51,8 +52,11 @@ const dropDownOptions: IDropdownOption[] = [
   { key: "J", text: "Option j", data: { icon: "AddGroup" } },
 ];
 
+
 const MyLinks = (props: IMyLinksProps) => {
   const [DeleteInfo, setDeleteInfo] = useState([]);
+  
+  const [currentIcon, setIcon] = useState("");
 
   function getEditItem(id: number, index: number) {
     // let modalItemsList = _sp.web.lists.getById(props.listGuid);
@@ -214,12 +218,16 @@ const MyLinks = (props: IMyLinksProps) => {
                     {o.edit ? (
                       <div className={styles.editForm}>
                         <div className={styles.editFields}>
-                          <Dropdown
+                          {/* <Dropdown
                             label="Ikon"
                             options={dropDownOptions}
                             defaultValue={o.Icon}
                             className={styles.editInputFields}
-                          ></Dropdown>
+                          ></Dropdown> */}
+                          <Icon iconName={currentIcon} className="editIcon"></Icon>
+                          <IconPicker buttonLabel={'Sett ikon'}
+          onChange={(iconName: string) => { alert(iconName); }}
+          onSave={(iconName: string) => { setIcon(iconName); }} />
                         </div>
                         <div className={styles.editFields}>
                           <TextField
