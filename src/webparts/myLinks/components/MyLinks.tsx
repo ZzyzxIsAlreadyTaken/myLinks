@@ -23,7 +23,7 @@ import {
   IDropdownOption,
 } from "office-ui-fabric-react";
 import { Item } from "@pnp/sp/items";
-import { IconPicker } from '@pnp/spfx-controls-react/lib/IconPicker';
+import { IconPicker } from "@pnp/spfx-controls-react/lib/IconPicker";
 
 initializeIcons();
 
@@ -32,31 +32,56 @@ const addEditIcon: IIconProps = { iconName: "Edit" };
 const addDeleteIcon: IIconProps = { iconName: "Delete" };
 const cancel: IIconProps = { iconName: "Cancel" };
 
-const dropDownOptions: IDropdownOption[] = [
-  { key: "Icons", text: "Options", itemType: DropdownMenuItemType.Header },
-  { key: "A", text: "Option a", data: { icon: "Memo" } },
-  { key: "B", text: "Option b", data: { icon: "Print" } },
-  { key: "C", text: "Option c", data: { icon: "ShoppingCart" } },
-  { key: "D", text: "Option d", data: { icon: "Train" } },
-  { key: "E", text: "Option e", data: { icon: "Repair" } },
-  { key: "divider_2", text: "-", itemType: DropdownMenuItemType.Divider },
-  {
-    key: "Header2",
-    text: "More options",
-    itemType: DropdownMenuItemType.Header,
-  },
-  { key: "F", text: "Option f", data: { icon: "Running" } },
-  { key: "G", text: "Option g", data: { icon: "EmojiNeutral" } },
-  { key: "H", text: "Option h", data: { icon: "ChatInviteFriend" } },
-  { key: "I", text: "Option i", data: { icon: "SecurityGroup" } },
-  { key: "J", text: "Option j", data: { icon: "AddGroup" } },
-];
-
+// ! Skal fjernes
+// const dropDownOptions: IDropdownOption[] = [
+//   { key: "Icons", text: "Options", itemType: DropdownMenuItemType.Header },
+//   { key: "A", text: "Option a", data: { icon: "Memo" } },
+//   { key: "B", text: "Option b", data: { icon: "Print" } },
+//   { key: "C", text: "Option c", data: { icon: "ShoppingCart" } },
+//   { key: "D", text: "Option d", data: { icon: "Train" } },
+//   { key: "E", text: "Option e", data: { icon: "Repair" } },
+//   { key: "divider_2", text: "-", itemType: DropdownMenuItemType.Divider },
+//   {
+//     key: "Header2",
+//     text: "More options",
+//     itemType: DropdownMenuItemType.Header,
+//   },
+//   { key: "F", text: "Option f", data: { icon: "Running" } },
+//   { key: "G", text: "Option g", data: { icon: "EmojiNeutral" } },
+//   { key: "H", text: "Option h", data: { icon: "ChatInviteFriend" } },
+//   { key: "I", text: "Option i", data: { icon: "SecurityGroup" } },
+//   { key: "J", text: "Option j", data: { icon: "AddGroup" } },
+// ];
 
 const MyLinks = (props: IMyLinksProps) => {
   const [DeleteInfo, setDeleteInfo] = useState([]);
-  
   const [currentIcon, setIcon] = useState("");
+  const [currentForm, setEditForm] = useState({
+    Title: "",
+    Link: "",
+    openinnewtab: "",
+  });
+
+  // * Edititem i modaldialog
+  const handleChange = (e: any) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    console.log(name, value);
+    setEditForm((prev) => {
+      return {...prev, => [name]: value}
+    })
+  };
+
+  function cancelButton() {
+    console.log("Cancel");
+    const newMyLinks = [
+      ...myLinksItems.map((item) => {
+        item.edit = false;
+        return item;
+      }),
+    ];
+    setMyLinksItems(newMyLinks);
+  }
 
   function getEditItem(id: number, index: number) {
     // let modalItemsList = _sp.web.lists.getById(props.listGuid);
@@ -80,12 +105,31 @@ const MyLinks = (props: IMyLinksProps) => {
     const list = _sp.web.lists.getById(props.listGuid);
     // list.items.getById(id).delete();
     {
-      myLinksItems.map((item) =>
+      myLinksItems.map(() =>
         setMyLinksItems(myLinksItems.filter((a) => a.Id !== id))
       );
     }
     let deleteInfoTXT = "Du har slettet: " + title;
     setDeleteInfo([deleteInfoTXT]);
+  }
+
+  function saveItem(id: number, index: number) {
+    const list = _sp.web.lists.getById(props.listGuid);
+
+    // list.items.getById(id).update({
+    //   Title: item.Title,
+    //   Icon: item.Icon,
+    //   Link: item.Link.Url,
+    //   openinnewtab: item.openinnewtab,
+    // } )
+    const newMyLinks = [
+      ...myLinksItems.map((item) => {
+        item.edit = false;
+        return item;
+      }),
+    ];
+    newMyLinks[index].edit = false;
+    setMyLinksItems(newMyLinks);
   }
 
   const LOG_SOURCE = "MyLinks Webpart";
@@ -224,16 +268,27 @@ const MyLinks = (props: IMyLinksProps) => {
                             defaultValue={o.Icon}
                             className={styles.editInputFields}
                           ></Dropdown> */}
-                          <Icon iconName={currentIcon} className="editIcon"></Icon>
-                          <IconPicker buttonLabel={'Sett ikon'}
-          onChange={(iconName: string) => { alert(iconName); }}
-          onSave={(iconName: string) => { setIcon(iconName); }} />
+                          <Icon
+                            iconName={currentIcon}
+                            className="editIcon"
+                          ></Icon>
+                          <IconPicker
+                            buttonLabel={"Sett ikon"}
+                            onChange={(iconName: string) => {
+                              setIcon(iconName);
+                            }}
+                            onSave={(iconName: string) => {
+                              setIcon(iconName);
+                            }}
+                          />
                         </div>
                         <div className={styles.editFields}>
                           <TextField
                             label="Tittel"
                             defaultValue={o.Title}
                             className={styles.editInputFields}
+                            onChange={handleChange}
+                            name="Title"
                           ></TextField>
                         </div>
                         <div className={styles.editFields}>
@@ -241,17 +296,33 @@ const MyLinks = (props: IMyLinksProps) => {
                             label="Url"
                             defaultValue={o.Link}
                             className={styles.editInputFields}
+                            onChange={handleChange}
+                            name="Link"
                           ></TextField>
                         </div>
                         <div className={styles.editFields}>
                           <Checkbox
-                            label="Kan åpnes i nytt vindu"
+                            label="Åpne lenke i nytt vindu"
                             checked={true}
+                            onChange={handleChange}
+                            name="openinnewtab"
                           ></Checkbox>
                         </div>
                         <div className={styles.editButtons}>
-                          <PrimaryButton>Save</PrimaryButton>
-                          <DefaultButton>Cancel</DefaultButton>
+                          <PrimaryButton
+                            onClick={() => {
+                              saveItem(o.Id, index);
+                            }}
+                          >
+                            Lagre
+                          </PrimaryButton>
+                          <DefaultButton
+                            onClick={() => {
+                              cancelButton();
+                            }}
+                          >
+                            Avbryt
+                          </DefaultButton>
                         </div>
                       </div>
                     ) : (
