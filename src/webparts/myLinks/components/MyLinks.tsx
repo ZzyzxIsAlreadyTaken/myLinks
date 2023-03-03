@@ -59,18 +59,25 @@ const MyLinks = (props: IMyLinksProps) => {
   const [currentForm, setEditForm] = useState({
     Title: "",
     Link: "",
-    openinnewtab: "",
+    openinnewtab: false,
   });
 
   // * Edititem i modaldialog
-  const handleChange = (e: any) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    console.log(name, value);
-    setEditForm((prev) => {
-      return {...prev, => [name]: value}
-    })
-  };
+  // const handleChange = (e: any) => {
+  //   const name = e.target.name;
+  //   const value = e.target.value;
+  //   const newMyLinks = [
+  //     ...myLinksItems.map((item) => {
+  //       item.Link = e.
+  //       item.edit = false;
+  //       return item;
+  //     }),
+  //   ];
+  //   console.log(name, value);
+  //   // setEditForm((prev) => {
+  //   //   return {...prev, => [name]: value}
+  //   // })
+  // };
 
   function cancelButton() {
     console.log("Cancel");
@@ -116,12 +123,12 @@ const MyLinks = (props: IMyLinksProps) => {
   function saveItem(id: number, index: number) {
     const list = _sp.web.lists.getById(props.listGuid);
 
-    // list.items.getById(id).update({
-    //   Title: item.Title,
+    list.items.getById(id).update({
+       Title: currentForm.Title,
     //   Icon: item.Icon,
-    //   Link: item.Link.Url,
+        Link: currentForm.Link,
     //   openinnewtab: item.openinnewtab,
-    // } )
+     } )
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.edit = false;
@@ -129,6 +136,11 @@ const MyLinks = (props: IMyLinksProps) => {
       }),
     ];
     newMyLinks[index].edit = false;
+    newMyLinks[index].Title = currentForm.Title;
+    newMyLinks[index].Link = currentForm.Link;
+    newMyLinks[index].openinnewtab = currentForm.openinnewtab;
+
+    console.log(currentForm);
     setMyLinksItems(newMyLinks);
   }
 
@@ -287,7 +299,7 @@ const MyLinks = (props: IMyLinksProps) => {
                             label="Tittel"
                             defaultValue={o.Title}
                             className={styles.editInputFields}
-                            onChange={handleChange}
+                            onChange={(e:any) => setEditForm({...currentForm, Title: e.target.value})}
                             name="Title"
                           ></TextField>
                         </div>
@@ -296,7 +308,7 @@ const MyLinks = (props: IMyLinksProps) => {
                             label="Url"
                             defaultValue={o.Link}
                             className={styles.editInputFields}
-                            onChange={handleChange}
+                            onChange={(e:any) => setEditForm({...currentForm, Link: e.target.value})}
                             name="Link"
                           ></TextField>
                         </div>
@@ -304,7 +316,7 @@ const MyLinks = (props: IMyLinksProps) => {
                           <Checkbox
                             label="Åpne lenke i nytt vindu"
                             checked={true}
-                            onChange={handleChange}
+                            onChange={(e:any) => setEditForm({...currentForm, openinnewtab: e.target.value})}
                             name="openinnewtab"
                           ></Checkbox>
                         </div>
