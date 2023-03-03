@@ -20,7 +20,7 @@
     "group": { "default": "Advanced" },
     "title": { "default": "myLinks" },
     "description": { "default": "myLinks description" },
-    "officeFabricIconFontName": "Page",
+    "officeFabricIconFontName": "Link",
     "properties": {
       "description": "myLinks"
     }
