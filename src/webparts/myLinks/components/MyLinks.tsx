@@ -103,6 +103,7 @@ const MyLinks = (props: IMyLinksProps) => {
       }),
     ];
     newMyLinks[index].edit = true;
+    setEditForm({ Title: newMyLinks[index].Title, Link: newMyLinks[index].Link, openinnewtab: newMyLinks[index].openinnewtab });
     setMyLinksItems(newMyLinks);
   }
 
@@ -126,7 +127,10 @@ const MyLinks = (props: IMyLinksProps) => {
     list.items.getById(id).update({
        Title: currentForm.Title,
     //   Icon: item.Icon,
-        Link: currentForm.Link,
+        Link: {
+        "Description": currentForm.Title,
+        "Url": currentForm.Link
+      },
     //   openinnewtab: item.openinnewtab,
      } )
     const newMyLinks = [
