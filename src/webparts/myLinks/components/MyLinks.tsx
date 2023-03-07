@@ -78,6 +78,22 @@ const MyLinks = (props: IMyLinksProps) => {
   //   //   return {...prev, => [name]: value}
   //   // })
   // };
+  function addItem(){
+
+    const newItem = {} as IMYLINKS;
+    
+    const newMyLinks = [
+      ...myLinksItems.map((item) => {
+        item.edit = false;
+        return item;
+      }),
+    ];
+
+    newMyLinks.unshift(newItem);
+    newItem.edit = true;
+    console.log(newMyLinks);
+    setMyLinksItems(newMyLinks);
+  }
 
   function cancelButton() {
     console.log("Cancel");
@@ -91,11 +107,6 @@ const MyLinks = (props: IMyLinksProps) => {
   }
 
   function getEditItem(id: number, index: number) {
-    // let modalItemsList = _sp.web.lists.getById(props.listGuid);
-    // let item = modalItemsList.items.getById(id)()
-    console.log(id);
-    console.log("Endret");
-    // Eivind
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.edit = false;
@@ -104,6 +115,7 @@ const MyLinks = (props: IMyLinksProps) => {
     ];
     newMyLinks[index].edit = true;
     setEditForm({ Title: newMyLinks[index].Title, Link: newMyLinks[index].Link, openinnewtab: newMyLinks[index].openinnewtab });
+    setIcon(newMyLinks[index].Icon)
     setMyLinksItems(newMyLinks);
   }
 
@@ -261,11 +273,11 @@ const MyLinks = (props: IMyLinksProps) => {
             <IconButton iconProps={cancel} onClick={hideModal}></IconButton>
             <div className={styles.modalWrapper}>
               <h3>Rediger mine lenker</h3>
-              <ActionButton iconProps={addLinkIcon}>Ny lenke</ActionButton>
+              <ActionButton iconProps={addLinkIcon} onClick={() => addItem()}>Ny lenke</ActionButton>
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
                   <div key={index}>
-                    <Icon iconName={o.Icon}></Icon>
+                    {o.Title ? (<><Icon iconName={o.Icon}></Icon>
                     <span className={styles.modalLinkTitle}>{o.Title}</span>
                     <IconButton
                       iconProps={addEditIcon}
@@ -274,7 +286,7 @@ const MyLinks = (props: IMyLinksProps) => {
                     <IconButton
                       iconProps={addDeleteIcon}
                       onClick={() => deleteItem(o.Id, o.Title)}
-                    ></IconButton>
+                    ></IconButton></>) : ("")}
                     {o.edit ? (
                       <div className={styles.editForm}>
                         <div className={styles.editFields}>
@@ -284,10 +296,7 @@ const MyLinks = (props: IMyLinksProps) => {
                             defaultValue={o.Icon}
                             className={styles.editInputFields}
                           ></Dropdown> */}
-                          <Icon
-                            iconName={currentIcon}
-                            className="editIcon"
-                          ></Icon>
+                        
                           <IconPicker
                             buttonLabel={"Sett ikon"}
                             onChange={(iconName: string) => {
@@ -297,6 +306,10 @@ const MyLinks = (props: IMyLinksProps) => {
                               setIcon(iconName);
                             }}
                           />
+                            <Icon
+                            iconName={currentIcon}
+                            className="editIcon"
+                          ></Icon>
                         </div>
                         <div className={styles.editFields}>
                           <TextField
@@ -346,6 +359,7 @@ const MyLinks = (props: IMyLinksProps) => {
                     )}
                   </div>
                 );
+                
               })}
               <span className={styles.deleteInfo}>{DeleteInfo}</span>
             </div>
