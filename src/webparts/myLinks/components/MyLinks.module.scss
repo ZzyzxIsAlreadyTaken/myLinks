@@ -77,9 +77,13 @@
 }
 
 .editIcon{
-  font-size: 50px;
-  height: 50px;
-  width: 50px;
+  font-size: 40px;
   margin: '0 25px';
-  float: left;
+}
+
+.iconField{
+  grid-column: span 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

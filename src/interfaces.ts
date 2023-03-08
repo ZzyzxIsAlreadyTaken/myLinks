@@ -5,6 +5,7 @@ export interface IMYLINKS {
     Icon: string;  
     openinnewtab: boolean;
     edit: boolean;
+    add: boolean;
 }
 
 export interface IMYADMINLINKS{

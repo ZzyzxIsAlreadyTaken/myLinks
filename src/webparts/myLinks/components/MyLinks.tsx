@@ -32,34 +32,15 @@ const addEditIcon: IIconProps = { iconName: "Edit" };
 const addDeleteIcon: IIconProps = { iconName: "Delete" };
 const cancel: IIconProps = { iconName: "Cancel" };
 
-// ! Skal fjernes
-// const dropDownOptions: IDropdownOption[] = [
-//   { key: "Icons", text: "Options", itemType: DropdownMenuItemType.Header },
-//   { key: "A", text: "Option a", data: { icon: "Memo" } },
-//   { key: "B", text: "Option b", data: { icon: "Print" } },
-//   { key: "C", text: "Option c", data: { icon: "ShoppingCart" } },
-//   { key: "D", text: "Option d", data: { icon: "Train" } },
-//   { key: "E", text: "Option e", data: { icon: "Repair" } },
-//   { key: "divider_2", text: "-", itemType: DropdownMenuItemType.Divider },
-//   {
-//     key: "Header2",
-//     text: "More options",
-//     itemType: DropdownMenuItemType.Header,
-//   },
-//   { key: "F", text: "Option f", data: { icon: "Running" } },
-//   { key: "G", text: "Option g", data: { icon: "EmojiNeutral" } },
-//   { key: "H", text: "Option h", data: { icon: "ChatInviteFriend" } },
-//   { key: "I", text: "Option i", data: { icon: "SecurityGroup" } },
-//   { key: "J", text: "Option j", data: { icon: "AddGroup" } },
-// ];
 
 const MyLinks = (props: IMyLinksProps) => {
   const [DeleteInfo, setDeleteInfo] = useState([]);
-  const [currentIcon, setIcon] = useState("");
-  const [currentForm, setEditForm] = useState({
+  const [currentIcon, setIcon] = useState("Link");
+  const [currentForm, setCurrentForm] = useState({
     Title: "",
     Link: "",
     openinnewtab: false,
+    Icon: "Link",
   });
 
   // * Edititem i modaldialog
@@ -74,14 +55,13 @@ const MyLinks = (props: IMyLinksProps) => {
   //     }),
   //   ];
   //   console.log(name, value);
-  //   // setEditForm((prev) => {
+  //   // setCurrentForm((prev) => {
   //   //   return {...prev, => [name]: value}
   //   // })
   // };
-  function addItem(){
-
+  function addItemState() {
     const newItem = {} as IMYLINKS;
-    
+
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.edit = false;
@@ -91,8 +71,33 @@ const MyLinks = (props: IMyLinksProps) => {
 
     newMyLinks.unshift(newItem);
     newItem.edit = true;
+    newItem.add = true;
     console.log(newMyLinks);
+    setMyLinksItems(newMyLinks); 
+  }
+
+  function createItemInList(){
+    const list = _sp.web.lists.getById(props.listGuid);
+    console.log(list);
+    console.log(currentForm.Title, currentIcon, currentForm.Link)
+    list.items.add({
+      Title: currentForm.Title,
+      Icon: currentIcon,
+      Link: {
+        Description: currentForm.Title,
+        Url: currentForm.Link,
+      },
+      /* openinnewtab: currentForm.openinnewtab, */
+    })
+    const newMyLinks = [
+      ...myLinksItems.map((item) => {
+        item.add = false;
+        item.edit = false;
+        return item;
+      }),
+    ];
     setMyLinksItems(newMyLinks);
+    
   }
 
   function cancelButton() {
@@ -114,16 +119,18 @@ const MyLinks = (props: IMyLinksProps) => {
       }),
     ];
     newMyLinks[index].edit = true;
-    setEditForm({ Title: newMyLinks[index].Title, Link: newMyLinks[index].Link, openinnewtab: newMyLinks[index].openinnewtab });
-    setIcon(newMyLinks[index].Icon)
-    setMyLinksItems(newMyLinks);
+    setCurrentForm({
+      Title: newMyLinks[index].Title,
+      Link: newMyLinks[index].Link,
+      openinnewtab: newMyLinks[index].openinnewtab,
+      Icon: newMyLinks[index].Icon,
+    });
+    /* setMyLinksItems(newMyLinks); */
   }
 
   function deleteItem(id: number, title: string): void {
-    // let modalItemsList = _sp.web.lists.getById(props.listGuid);
-    // let item = modalItemsList.items.getById(id)()
     const list = _sp.web.lists.getById(props.listGuid);
-    // list.items.getById(id).delete();
+    list.items.getById(id).delete();
     {
       myLinksItems.map(() =>
         setMyLinksItems(myLinksItems.filter((a) => a.Id !== id))
@@ -137,14 +144,14 @@ const MyLinks = (props: IMyLinksProps) => {
     const list = _sp.web.lists.getById(props.listGuid);
 
     list.items.getById(id).update({
-       Title: currentForm.Title,
-    //   Icon: item.Icon,
-        Link: {
-        "Description": currentForm.Title,
-        "Url": currentForm.Link
+      Title: currentForm.Title,
+      Icon: currentIcon,
+      Link: {
+        Description: currentForm.Title,
+        Url: currentForm.Link,
       },
-    //   openinnewtab: item.openinnewtab,
-     } )
+      //   openinnewtab: item.openinnewtab,
+    });
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.edit = false;
@@ -155,6 +162,7 @@ const MyLinks = (props: IMyLinksProps) => {
     newMyLinks[index].Title = currentForm.Title;
     newMyLinks[index].Link = currentForm.Link;
     newMyLinks[index].openinnewtab = currentForm.openinnewtab;
+    newMyLinks[index].Icon = currentIcon;
 
     console.log(currentForm);
     setMyLinksItems(newMyLinks);
@@ -186,6 +194,7 @@ const MyLinks = (props: IMyLinksProps) => {
           Link: item.Link.Url,
           openinnewtab: item.openinnewtab,
           edit: false,
+          add: false,
         };
       })
     );
@@ -265,38 +274,54 @@ const MyLinks = (props: IMyLinksProps) => {
           <Modal
             titleAriaId={titleId}
             isOpen={isModalOpen}
-            onDismiss={hideModal}
+            onDismiss={() => {
+              hideModal();
+              getMyLinksItems();
+            }}
             isBlocking={false}
             forceFocusInsideTrap={false}
             containerClassName={styles.modalStyles}
           >
-            <IconButton iconProps={cancel} onClick={hideModal}></IconButton>
+            <IconButton
+              iconProps={cancel}
+              onClick={() => {
+                hideModal();
+                getMyLinksItems();
+              }}
+            ></IconButton>
             <div className={styles.modalWrapper}>
               <h3>Rediger mine lenker</h3>
-              <ActionButton iconProps={addLinkIcon} onClick={() => addItem()}>Ny lenke</ActionButton>
+              <ActionButton iconProps={addLinkIcon} onClick={() => addItemState()}>
+                Ny lenke
+              </ActionButton>
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
                   <div key={index}>
-                    {o.Title ? (<><Icon iconName={o.Icon}></Icon>
-                    <span className={styles.modalLinkTitle}>{o.Title}</span>
-                    <IconButton
-                      iconProps={addEditIcon}
-                      onClick={() => getEditItem(o.Id, index)}
-                    ></IconButton>
-                    <IconButton
-                      iconProps={addDeleteIcon}
-                      onClick={() => deleteItem(o.Id, o.Title)}
-                    ></IconButton></>) : ("")}
+                    {o.Title ? (
+                      <>
+                        <Icon iconName={o.Icon}></Icon>
+                        <span className={styles.modalLinkTitle}>{o.Title}</span>
+                        <IconButton
+                          iconProps={addEditIcon}
+                          onClick={() => getEditItem(o.Id, index)}
+                        ></IconButton>
+                        <IconButton
+                          iconProps={addDeleteIcon}
+                          onClick={() => deleteItem(o.Id, o.Title)}
+                        ></IconButton>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     {o.edit ? (
                       <div className={styles.editForm}>
-                        <div className={styles.editFields}>
-                          {/* <Dropdown
-                            label="Ikon"
-                            options={dropDownOptions}
-                            defaultValue={o.Icon}
-                            className={styles.editInputFields}
-                          ></Dropdown> */}
-                        
+                        <div className={styles.iconField}>
+                          <Icon
+                            iconName={o.Icon ? o.Icon : currentIcon}
+                            className={styles.editIcon}
+                          ></Icon>
+                        </div>
+                        <div className={styles.iconField}>
                           <IconPicker
                             buttonLabel={"Sett ikon"}
                             onChange={(iconName: string) => {
@@ -306,17 +331,19 @@ const MyLinks = (props: IMyLinksProps) => {
                               setIcon(iconName);
                             }}
                           />
-                            <Icon
-                            iconName={currentIcon}
-                            className="editIcon"
-                          ></Icon>
+                          
                         </div>
                         <div className={styles.editFields}>
                           <TextField
                             label="Tittel"
                             defaultValue={o.Title}
                             className={styles.editInputFields}
-                            onChange={(e:any) => setEditForm({...currentForm, Title: e.target.value})}
+                            onChange={(e: any) =>
+                              setCurrentForm({
+                                ...currentForm,
+                                Title: e.target.value,
+                              })
+                            }
                             name="Title"
                           ></TextField>
                         </div>
@@ -325,7 +352,12 @@ const MyLinks = (props: IMyLinksProps) => {
                             label="Url"
                             defaultValue={o.Link}
                             className={styles.editInputFields}
-                            onChange={(e:any) => setEditForm({...currentForm, Link: e.target.value})}
+                            onChange={(e: any) =>
+                              setCurrentForm({
+                                ...currentForm,
+                                Link: e.target.value,
+                              })
+                            }
                             name="Link"
                           ></TextField>
                         </div>
@@ -333,13 +365,18 @@ const MyLinks = (props: IMyLinksProps) => {
                           <Checkbox
                             label="Åpne lenke i nytt vindu"
                             checked={true}
-                            onChange={(e:any) => setEditForm({...currentForm, openinnewtab: e.target.value})}
+                            onChange={(e: any) =>
+                              setCurrentForm({
+                                ...currentForm,
+                                openinnewtab: e.target.value,
+                              })
+                            }
                             name="openinnewtab"
                           ></Checkbox>
                         </div>
                         <div className={styles.editButtons}>
                           <PrimaryButton
-                            onClick={() => {
+                            onClick={() => { o.add ? createItemInList() :
                               saveItem(o.Id, index);
                             }}
                           >
@@ -359,7 +396,6 @@ const MyLinks = (props: IMyLinksProps) => {
                     )}
                   </div>
                 );
-                
               })}
               <span className={styles.deleteInfo}>{DeleteInfo}</span>
             </div>
