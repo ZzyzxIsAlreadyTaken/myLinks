@@ -24,6 +24,7 @@ import {
 } from "office-ui-fabric-react";
 import { Item } from "@pnp/sp/items";
 import { IconPicker } from "@pnp/spfx-controls-react/lib/IconPicker";
+import FluentUiDropdown from "./FluentUiDropdown";
 
 initializeIcons();
 
@@ -72,6 +73,7 @@ const MyLinks = (props: IMyLinksProps) => {
     newMyLinks.unshift(newItem);
     newItem.edit = true;
     newItem.add = true;
+    newItem.Icon = "Link";
     console.log(newMyLinks);
     setMyLinksItems(newMyLinks); 
   }
@@ -97,7 +99,6 @@ const MyLinks = (props: IMyLinksProps) => {
       }),
     ];
     setMyLinksItems(newMyLinks);
-    
   }
 
   function cancelButton() {
@@ -125,6 +126,7 @@ const MyLinks = (props: IMyLinksProps) => {
       openinnewtab: newMyLinks[index].openinnewtab,
       Icon: newMyLinks[index].Icon,
     });
+    setIcon(newMyLinks[index].Icon)
     /* setMyLinksItems(newMyLinks); */
   }
 
@@ -291,8 +293,14 @@ const MyLinks = (props: IMyLinksProps) => {
             ></IconButton>
             <div className={styles.modalWrapper}>
               <h3>Rediger mine lenker</h3>
-              <ActionButton iconProps={addLinkIcon} onClick={() => addItemState()}>
-                Ny lenke
+              <ActionButton iconProps={addLinkIcon} onClick={() => addItemState()} className={styles.newButtons}>
+                Ny egendefinert lenke
+              </ActionButton>
+              {/* !Jobber her med siste del av funksjonalitet
+               */}
+              <ActionButton iconProps={addLinkIcon} /* onClick={() => addLinkFromList()} */ className={styles.newButtons}>
+                <FluentUiDropdown description={""} webURL={""} singleValueOptions={undefined} multiValueOptions={undefined}></FluentUiDropdown>
+                Ny lenke fra liste
               </ActionButton>
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
@@ -317,7 +325,7 @@ const MyLinks = (props: IMyLinksProps) => {
                       <div className={styles.editForm}>
                         <div className={styles.iconField}>
                           <Icon
-                            iconName={o.Icon ? o.Icon : currentIcon}
+                            iconName={currentIcon}
                             className={styles.editIcon}
                           ></Icon>
                         </div>
@@ -374,11 +382,12 @@ const MyLinks = (props: IMyLinksProps) => {
                             name="openinnewtab"
                           ></Checkbox>
                         </div>
-                        <div className={styles.editButtons}>
+                        <div className={styles.editButtonsContainer}>
                           <PrimaryButton
                             onClick={() => { o.add ? createItemInList() :
                               saveItem(o.Id, index);
                             }}
+                            className={styles.editFormButtons}
                           >
                             Lagre
                           </PrimaryButton>
