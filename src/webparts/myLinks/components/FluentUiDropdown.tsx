@@ -7,6 +7,7 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import { escape } from '@microsoft/sp-lodash-subset';
 import {Dropdown, PrimaryButton, IDropdownOption} from '@fluentui/react';
+import { IMyLinksProps } from './IMyLinksProps';
 
 let arr:any = [];
 export interface IDropdownStates
@@ -27,9 +28,9 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
     
   }
   
-  public onDropdownChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
+  /* public onDropdownChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
     this.setState({ singleValueDropdown: item.key as string});
-  }
+  } */
 
   public onDropdownMultiChange = async (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): Promise<void> => {
     if (item.selected) {
@@ -43,9 +44,9 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
 
   private async Save(e:any) {
     let web = Web(this.props.webURL);
-    await web.lists.getByTitle("FluentUIDropdown").items.add({
+    await web.lists.getByTitle(this.props.listGuid).items.add({
       Title: Guid.newGuid().toString(),
-      SingleValueDropdown: this.state.singleValueDropdown,
+      /* SingleValueDropdown: this.state.singleValueDropdown, */
       MultiValueDropdown: { results: this.state.multiValueDropdown }
 
     }).then(i => {
@@ -58,15 +59,15 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
   public render(): React.ReactElement<IFluentUiDropdownProps> {
     return (
       <div className={ styles.fluentUiDropdown }>
-        <h1>Fluent UI Dropdown</h1>
-        <Dropdown
+        {/* <h1>Fluent UI Dropdown</h1> */}
+      {/*   <Dropdown
           placeholder="Single Select Dropdown..."
           selectedKey={this.state.singleValueDropdown}
           label="Single Select Dropdown"
           options={this.props.singleValueOptions}
           onChange={this.onDropdownChange}
         />
-        <br />
+        <br /> */}
         <Dropdown
           placeholder="Multi Select Dropdown..."
           defaultSelectedKeys={this.state.multiValueDropdown}
@@ -75,11 +76,11 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
           options={this.props.multiValueOptions}
           onChange={this.onDropdownMultiChange}
         />
-        <div>
+        {/* <div>
           <br />
           <br />
           <PrimaryButton onClick={e => this.Save(e)}>Submit</PrimaryButton>
-        </div>
+        </div> */}
       </div>
     );
   }

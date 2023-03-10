@@ -3,4 +3,5 @@ export interface IFluentUiDropdownProps {
   webURL:string;
   singleValueOptions:any;
   multiValueOptions:any;
+  listGuid: string;
 }

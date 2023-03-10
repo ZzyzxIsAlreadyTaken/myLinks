@@ -299,9 +299,17 @@ const MyLinks = (props: IMyLinksProps) => {
               {/* !Jobber her med siste del av funksjonalitet
                */}
               <ActionButton iconProps={addLinkIcon} /* onClick={() => addLinkFromList()} */ className={styles.newButtons}>
-                <FluentUiDropdown description={""} webURL={""} singleValueOptions={undefined} multiValueOptions={undefined}></FluentUiDropdown>
                 Ny lenke fra liste
               </ActionButton>
+            
+              <FluentUiDropdown description={"Heisannhoppsann"} webURL={"https://vg.no"} singleValueOptions={"vg"} multiValueOptions={[ { text: 'Monday',     key: "blu" },  
+                      { text: 'Tuesday',    key: "blu"},  
+                      { text: 'Wednesday',  key: "blu" },  
+                      { text: 'Thursday',   key: "blu" },  
+                      { text: 'Friday',     key: "blu" },  
+                      { text: 'Saturday',   key: "blu" },  
+                      { text: 'Sunday',     key: "blu" }  
+                    ] } listGuid={props.listGuid}></FluentUiDropdown>
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
                   <div key={index}>
