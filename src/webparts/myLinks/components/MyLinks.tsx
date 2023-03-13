@@ -35,6 +35,8 @@ const cancel: IIconProps = { iconName: "Cancel" };
 
 
 const MyLinks = (props: IMyLinksProps) => {
+  
+  // * Hooks 
   const [DeleteInfo, setDeleteInfo] = useState([]);
   const [currentIcon, setIcon] = useState("Link");
   const [currentForm, setCurrentForm] = useState({
@@ -43,6 +45,8 @@ const MyLinks = (props: IMyLinksProps) => {
     openinnewtab: false,
     Icon: "Link",
   });
+  const [newLinkFromList, setNewLinkFromList] = useState(false);
+  
 
   // * Edititem i modaldialog
   // const handleChange = (e: any) => {
@@ -113,8 +117,9 @@ const MyLinks = (props: IMyLinksProps) => {
   }
 
   function getEditItem(id: number, index: number) {
+    
     const newMyLinks = [
-      ...myLinksItems.map((item) => {
+      ...myLinksItems.map((item) => { 
         item.edit = false;
         return item;
       }),
@@ -127,7 +132,7 @@ const MyLinks = (props: IMyLinksProps) => {
       Icon: newMyLinks[index].Icon,
     });
     setIcon(newMyLinks[index].Icon)
-    /* setMyLinksItems(newMyLinks); */
+    setMyLinksItems(newMyLinks);
   }
 
   function deleteItem(id: number, title: string): void {
@@ -152,7 +157,7 @@ const MyLinks = (props: IMyLinksProps) => {
         Description: currentForm.Title,
         Url: currentForm.Link,
       },
-      //   openinnewtab: item.openinnewtab,
+      openinnewtab: currentForm.openinnewtab,
     });
     const newMyLinks = [
       ...myLinksItems.map((item) => {
@@ -298,18 +303,18 @@ const MyLinks = (props: IMyLinksProps) => {
               </ActionButton>
               {/* !Jobber her med siste del av funksjonalitet
                */}
-              <ActionButton iconProps={addLinkIcon} /* onClick={() => addLinkFromList()} */ className={styles.newButtons}>
+              <ActionButton iconProps={addLinkIcon} onClick={() => setNewLinkFromList(!newLinkFromList)}  className={styles.newButtons}>
                 Ny lenke fra liste
               </ActionButton>
-            
-              <FluentUiDropdown description={"Heisannhoppsann"} webURL={"https://vg.no"} singleValueOptions={"vg"} multiValueOptions={[ { text: 'Monday',     key: "blu" },  
+               {newLinkFromList ? <><FluentUiDropdown description={"Heisannhoppsann"} webURL={"https://vg.no"} singleValueOptions={"vg"} multiValueOptions={[ { text: 'Monday',     key: "blu" },  
                       { text: 'Tuesday',    key: "blu"},  
                       { text: 'Wednesday',  key: "blu" },  
                       { text: 'Thursday',   key: "blu" },  
                       { text: 'Friday',     key: "blu" },  
                       { text: 'Saturday',   key: "blu" },  
                       { text: 'Sunday',     key: "blu" }  
-                    ] } listGuid={props.listGuid}></FluentUiDropdown>
+                    ] } listGuid={props.listGuid}></FluentUiDropdown><PrimaryButton>Legg til lenker</PrimaryButton></> : ""}
+              
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
                   <div key={index}>
@@ -380,11 +385,11 @@ const MyLinks = (props: IMyLinksProps) => {
                         <div className={styles.editFields}>
                           <Checkbox
                             label="Åpne lenke i nytt vindu"
-                            checked={true}
+                            checked={currentForm.openinnewtab}
                             onChange={(e: any) =>
                               setCurrentForm({
                                 ...currentForm,
-                                openinnewtab: e.target.value,
+                                openinnewtab: !currentForm.openinnewtab,
                               })
                             }
                             name="openinnewtab"
