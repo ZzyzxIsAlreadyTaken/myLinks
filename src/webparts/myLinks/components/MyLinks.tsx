@@ -33,10 +33,8 @@ const addEditIcon: IIconProps = { iconName: "Edit" };
 const addDeleteIcon: IIconProps = { iconName: "Delete" };
 const cancel: IIconProps = { iconName: "Cancel" };
 
-
 const MyLinks = (props: IMyLinksProps) => {
-  
-  // * Hooks 
+  // * Hooks
   const [DeleteInfo, setDeleteInfo] = useState([]);
   const [currentIcon, setIcon] = useState("Link");
   const [currentForm, setCurrentForm] = useState({
@@ -46,24 +44,7 @@ const MyLinks = (props: IMyLinksProps) => {
     Icon: "Link",
   });
   const [newLinkFromList, setNewLinkFromList] = useState(false);
-  
 
-  // * Edititem i modaldialog
-  // const handleChange = (e: any) => {
-  //   const name = e.target.name;
-  //   const value = e.target.value;
-  //   const newMyLinks = [
-  //     ...myLinksItems.map((item) => {
-  //       item.Link = e.
-  //       item.edit = false;
-  //       return item;
-  //     }),
-  //   ];
-  //   console.log(name, value);
-  //   // setCurrentForm((prev) => {
-  //   //   return {...prev, => [name]: value}
-  //   // })
-  // };
   function addItemState() {
     const newItem = {} as IMYLINKS;
 
@@ -79,13 +60,13 @@ const MyLinks = (props: IMyLinksProps) => {
     newItem.add = true;
     newItem.Icon = "Link";
     console.log(newMyLinks);
-    setMyLinksItems(newMyLinks); 
+    setMyLinksItems(newMyLinks);
   }
 
-  function createItemInList(){
+  function createItemInList() {
     const list = _sp.web.lists.getById(props.listGuid);
     console.log(list);
-    console.log(currentForm.Title, currentIcon, currentForm.Link)
+    console.log(currentForm.Title, currentIcon, currentForm.Link);
     list.items.add({
       Title: currentForm.Title,
       Icon: currentIcon,
@@ -93,8 +74,8 @@ const MyLinks = (props: IMyLinksProps) => {
         Description: currentForm.Title,
         Url: currentForm.Link,
       },
-      /* openinnewtab: currentForm.openinnewtab, */
-    })
+      openinnewtab: currentForm.openinnewtab
+    });
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.add = false;
@@ -117,9 +98,8 @@ const MyLinks = (props: IMyLinksProps) => {
   }
 
   function getEditItem(id: number, index: number) {
-    
     const newMyLinks = [
-      ...myLinksItems.map((item) => { 
+      ...myLinksItems.map((item) => {
         item.edit = false;
         return item;
       }),
@@ -131,7 +111,7 @@ const MyLinks = (props: IMyLinksProps) => {
       openinnewtab: newMyLinks[index].openinnewtab,
       Icon: newMyLinks[index].Icon,
     });
-    setIcon(newMyLinks[index].Icon)
+    setIcon(newMyLinks[index].Icon);
     setMyLinksItems(newMyLinks);
   }
 
@@ -228,6 +208,7 @@ const MyLinks = (props: IMyLinksProps) => {
           Title: item.Title,
           Link: item.Link.Url,
           openinnewtab: item.openinnewtab,
+          Valgfri: item.Valgfri
         };
       })
     );
@@ -252,6 +233,17 @@ const MyLinks = (props: IMyLinksProps) => {
     }
   }, [props]);
 
+  // let newArray : {text: string, key: string|number} = []
+  // myAdminLinksItems.map((o: IMYADMINLINKS, index: number) => {
+  //   newArray.push()
+  // })
+
+  let optionsArray = myAdminLinksItems.filter((item) => {if (item.Valgfri == true){return {item}} }).map(item => ({text: item.Title, key: item.Id}))
+  
+  // console.log("optionsarray3",optionsArray3);
+  const predefinedLinksOptions: IDropdownOption[] = optionsArray
+  
+  
   return (
     // <>
     // <h1>Hello World</h1>
@@ -265,19 +257,7 @@ const MyLinks = (props: IMyLinksProps) => {
             title={props.title}
             updateProperty={props.updateProperty}
           />
-          <ActionButton
-            className={`${styles.button} ms-fontColor-black`}
-            shape="rounded"
-            iconProps={addEditIcon}
-            onClick={() => {
-              showModal();
-              setDeleteInfo([""]);
-            }}
-          >
-            Rediger lenker
-          </ActionButton>
-          <br />
-          <strong>Adminlinks</strong>
+          
           <Modal
             titleAriaId={titleId}
             isOpen={isModalOpen}
@@ -298,23 +278,38 @@ const MyLinks = (props: IMyLinksProps) => {
             ></IconButton>
             <div className={styles.modalWrapper}>
               <h3>Rediger mine lenker</h3>
-              <ActionButton iconProps={addLinkIcon} onClick={() => addItemState()} className={styles.newButtons}>
+              <ActionButton
+                iconProps={addLinkIcon}
+                onClick={() => addItemState()}
+                className={styles.newButtons}
+              >
                 Ny egendefinert lenke
               </ActionButton>
-              {/* !Jobber her med siste del av funksjonalitet
-               */}
-              <ActionButton iconProps={addLinkIcon} onClick={() => setNewLinkFromList(!newLinkFromList)}  className={styles.newButtons}>
+             
+              <ActionButton
+                iconProps={addLinkIcon}
+                onClick={() => setNewLinkFromList(!newLinkFromList)}
+                className={styles.newButtons}
+              >
                 Ny lenke fra liste
               </ActionButton>
-               {newLinkFromList ? <><FluentUiDropdown description={"Heisannhoppsann"} webURL={"https://vg.no"} singleValueOptions={"vg"} multiValueOptions={[ { text: 'Monday',     key: "blu" },  
-                      { text: 'Tuesday',    key: "blu"},  
-                      { text: 'Wednesday',  key: "blu" },  
-                      { text: 'Thursday',   key: "blu" },  
-                      { text: 'Friday',     key: "blu" },  
-                      { text: 'Saturday',   key: "blu" },  
-                      { text: 'Sunday',     key: "blu" }  
-                    ] } listGuid={props.listGuid}></FluentUiDropdown><PrimaryButton>Legg til lenker</PrimaryButton></> : ""}
-              
+              {newLinkFromList ? (
+                <div className={styles.predefinedLinksContainer}>
+                  <FluentUiDropdown
+                    description={"Valgfrie lenker"}
+                    webURL={""}
+                    singleValueOptions={""}
+                    multiValueOptions={predefinedLinksOptions}
+                    listGuid={props.listGuid}
+                    listGuid2={props.listGuid2}
+                    context={props.context}
+                  ></FluentUiDropdown>
+                  <DefaultButton onClick={() => setNewLinkFromList(!newLinkFromList)}>Lukk</DefaultButton>
+                </div>
+              ) : (
+                ""
+              )}
+
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
                   <div key={index}>
@@ -352,7 +347,6 @@ const MyLinks = (props: IMyLinksProps) => {
                               setIcon(iconName);
                             }}
                           />
-                          
                         </div>
                         <div className={styles.editFields}>
                           <TextField
@@ -397,10 +391,12 @@ const MyLinks = (props: IMyLinksProps) => {
                         </div>
                         <div className={styles.editButtonsContainer}>
                           <PrimaryButton
-                            onClick={() => { o.add ? createItemInList() :
-                              saveItem(o.Id, index);
+                            onClick={() => {
+                              o.add
+                                ? createItemInList()
+                                : saveItem(o.Id, index);
                             }}
-                            className={styles.editFormButtons}
+                            className={styles.saveButtons}
                           >
                             Lagre
                           </PrimaryButton>
@@ -427,8 +423,9 @@ const MyLinks = (props: IMyLinksProps) => {
         ""
       )}
       {/* Adminlinks */}
+      <div className={styles.linkHeader}><strong>Felleslenker</strong></div>
       {props.listGuid && props.listGuid2
-        ? myAdminLinksItems.map((o: IMYADMINLINKS, index: number) => {
+        ? myAdminLinksItems.filter((item) => {if (item.Valgfri == false){return {item}} }).map((o: IMYADMINLINKS, index: number) => { 
             return (
               <div key={index}>
                 <Icon iconName="Link"></Icon>
@@ -453,12 +450,12 @@ const MyLinks = (props: IMyLinksProps) => {
         : ""}
       {/* My links */}
       {props.listGuid && props.listGuid2 ? (
-        <strong>Egendefinerte lenker</strong>
+        <div className={styles.linkHeader}><strong>Egendefinerte lenker</strong></div>
       ) : (
         ""
       )}
-      {props.listGuid && props.listGuid2 ? (
-        myLinksItems.map((o: IMYLINKS, index: number) => {
+      {props.listGuid && props.listGuid2 ? (<>
+        {myLinksItems.map((o: IMYLINKS, index: number) => {
           return (
             <div key={index}>
               <Icon iconName={o.Icon}></Icon>
@@ -479,7 +476,20 @@ const MyLinks = (props: IMyLinksProps) => {
               )}
             </div>
           );
-        })
+        })} 
+        <br />
+        <ActionButton
+        className={`${styles.button} ms-fontColor-black`}
+        shape="rounded"
+        iconProps={addEditIcon}
+        onClick={() => {
+          showModal();
+          setDeleteInfo([""]);
+        }}
+      >
+        Rediger lenker
+      </ActionButton>
+      </>
       ) : (
         <Placeholder
           iconName="Edit"

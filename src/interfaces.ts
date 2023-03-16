@@ -13,4 +13,5 @@ export interface IMYADMINLINKS{
     Title: string;
     Link: string;
     openinnewtab: boolean;
+    Valgfri: boolean;
 }
