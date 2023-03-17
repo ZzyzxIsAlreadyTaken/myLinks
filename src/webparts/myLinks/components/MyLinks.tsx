@@ -30,6 +30,12 @@ initializeIcons();
 
 const addLinkIcon: IIconProps = { iconName: "AddLink" };
 const addEditIcon: IIconProps = { iconName: "Edit" };
+const addEdit2Icon: IIconProps = {
+  iconName: 'Edit',
+  styles: {root: {color: "green", fontColor: "green", }
+},
+  className: styles.editButtonIcon
+};
 const addDeleteIcon: IIconProps = { iconName: "Delete" };
 const cancel: IIconProps = { iconName: "Cancel" };
 
@@ -304,7 +310,7 @@ const MyLinks = (props: IMyLinksProps) => {
                     listGuid2={props.listGuid2}
                     context={props.context}
                   ></FluentUiDropdown>
-                  <DefaultButton className={styles.lukkButton} onClick={() => setNewLinkFromList(!newLinkFromList)}>Lukk</DefaultButton>
+                  <DefaultButton className={styles.lukkButton} onClick={() => {setNewLinkFromList(!newLinkFromList); console.log(predefinedLinksOptions)}}>Lukk</DefaultButton>
                 </div>
               ) : (
                 ""
@@ -481,10 +487,11 @@ const MyLinks = (props: IMyLinksProps) => {
         <ActionButton
         className={`${styles.button} ms-fontColor-black`}
         shape="rounded"
-        iconProps={addEditIcon}
+        iconProps={addEdit2Icon}
         onClick={() => {
           showModal();
           setDeleteInfo([""]);
+          setNewLinkFromList(false);
         }}
       >
         Rediger lenker

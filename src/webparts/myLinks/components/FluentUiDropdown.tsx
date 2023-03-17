@@ -8,7 +8,7 @@ import "@pnp/sp/items";
 import { SPFI } from "@pnp/sp";
 import { getSP } from "../../../pnpjsConfig";
 import { escape } from '@microsoft/sp-lodash-subset';
-import {Dropdown, PrimaryButton, IDropdownOption, DefaultButton} from '@fluentui/react';
+import {Dropdown, PrimaryButton, IDropdownOption} from '@fluentui/react';
 
 let arr:any = [];
 export interface IDropdownStates

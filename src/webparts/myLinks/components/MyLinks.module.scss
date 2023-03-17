@@ -35,7 +35,9 @@
 
 .button {
   // background-color: "[theme: themeTertiary, default: gray]";
-  border-color: "[theme: themePrimary, default: gray]";
+  border: 0px;
+  font-size: 14px;
+  padding: 2px;
 }
 
 //Modal Dialog
@@ -122,4 +124,8 @@
 
 .lukkButton{
   margin-top: 5px;
+}
+
+.editButtonIcon{
+  font-size: small;
 }
