@@ -304,7 +304,7 @@ const MyLinks = (props: IMyLinksProps) => {
                     listGuid2={props.listGuid2}
                     context={props.context}
                   ></FluentUiDropdown>
-                  <DefaultButton onClick={() => setNewLinkFromList(!newLinkFromList)}>Lukk</DefaultButton>
+                  <DefaultButton className={styles.lukkButton} onClick={() => setNewLinkFromList(!newLinkFromList)}>Lukk</DefaultButton>
                 </div>
               ) : (
                 ""

@@ -116,7 +116,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
         />
         <div>
           <br />
-          <PrimaryButton className={styles.leggtilbutton} onClick={e => this.Save(e)}>Legg til lenker</PrimaryButton>
+          <PrimaryButton onClick={e => this.Save(e)}>Legg til lenker</PrimaryButton>
           {/* <DefaultButton>Avbryt</DefaultButton> */}
         </div> 
       </div>
