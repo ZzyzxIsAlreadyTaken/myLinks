@@ -1,8 +1,10 @@
 # my-links
 
-## Summary
+## Summary 
 
-Short summary on functionality and used technologies.
+MyLinks web part
+Links list editable for each user.
+Admin links that is only editable for admins and that is pushed for each user.
 
 [picture of the solution in action, if possible]
 
