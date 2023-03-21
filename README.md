@@ -1,4 +1,4 @@
-# my-links
+# myLinks web part
 
 ## Summary 
 
