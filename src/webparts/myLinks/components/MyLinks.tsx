@@ -50,6 +50,7 @@ const MyLinks = (props: IMyLinksProps) => {
     Icon: "Link",
   });
   const [newLinkFromList, setNewLinkFromList] = useState(false);
+  const [showEgendefinerte, setshowEgendefinerte] = useState(false);
 
   function addItemState() {
     const newItem = {} as IMYLINKS;
@@ -456,12 +457,11 @@ const MyLinks = (props: IMyLinksProps) => {
         : ""}
       {/* My links */}
       {props.listGuid && props.listGuid2 ? (
-        <div className={styles.linkHeader}>Egendefinerte lenker</div>
+        <div className={styles.linkHeader}>Egendefinerte lenker <Icon onClick={() => setshowEgendefinerte(!showEgendefinerte)} iconName={showEgendefinerte ? "ChevronDown" : "ChevronUp"}></Icon></div>
       ) : (
         ""
       )}
-      {props.listGuid && props.listGuid2 ? (<>
-        {myLinksItems.map((o: IMYLINKS, index: number) => {
+      {props.listGuid && props.listGuid2 ? (<>{showEgendefinerte ?  <>{myLinksItems.map((o: IMYLINKS, index: number) => {
           return (
             <div key={index}>
               <Icon iconName={o.Icon}></Icon>
@@ -482,7 +482,8 @@ const MyLinks = (props: IMyLinksProps) => {
               )}
             </div>
           );
-        })} 
+        })}</>  : ""}
+       
         <br />
         <ActionButton
         className={`${styles.button} ms-fontColor-black`}
