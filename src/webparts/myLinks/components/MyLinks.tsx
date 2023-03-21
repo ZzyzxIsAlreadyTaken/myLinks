@@ -429,7 +429,7 @@ const MyLinks = (props: IMyLinksProps) => {
         ""
       )}
       {/* Adminlinks */}
-      <div className={styles.linkHeader}><strong>Felleslenker</strong></div>
+      <div className={styles.linkHeader}>Felleslenker</div>
       {props.listGuid && props.listGuid2
         ? myAdminLinksItems.filter((item) => {if (item.Valgfri == false){return {item}} }).map((o: IMYADMINLINKS, index: number) => { 
             return (
@@ -456,7 +456,7 @@ const MyLinks = (props: IMyLinksProps) => {
         : ""}
       {/* My links */}
       {props.listGuid && props.listGuid2 ? (
-        <div className={styles.linkHeader}><strong>Egendefinerte lenker</strong></div>
+        <div className={styles.linkHeader}>Egendefinerte lenker</div>
       ) : (
         ""
       )}
