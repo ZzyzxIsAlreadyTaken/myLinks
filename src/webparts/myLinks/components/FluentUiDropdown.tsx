@@ -51,7 +51,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
     const adminlinksItems = await this._sp.web.lists.getById(this.props.listGuid2).items.select().orderBy("Title", true)();
   //   adminlinksItems.forEach((el)=>{ foreach(()=>)
   // })
-  console.log(this.state.multiValueDropdown)
+  console.log("valgfri lenker:",this.state.multiValueDropdown)
   console.log(adminlinksItems)
   const newAdminlinksItems = adminlinksItems.filter(item => this.state.multiValueDropdown.includes(item.Id))
   // newAdminlinksItems.forEach(async item => await this._sp.web.lists.getById(this.props.listGuid).items.add({
@@ -116,7 +116,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
         />
         <div>
           <br />
-          <PrimaryButton onClick={e => this.Save(e)}>Legg til lenker</PrimaryButton>
+          <PrimaryButton onClick={e => {this.Save(e);this.forceUpdate()}}>Legg til lenker</PrimaryButton>
           {/* <DefaultButton>Avbryt</DefaultButton> */}
         </div> 
       </div>

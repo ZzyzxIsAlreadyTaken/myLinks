@@ -70,6 +70,15 @@ const MyLinks = (props: IMyLinksProps) => {
     setMyLinksItems(newMyLinks);
   }
 
+  function closeEditForms(){
+    const newMyLinks = [
+      ...myLinksItems.map((item) => {
+        item.edit = false;
+        return item;
+      }),
+    ];
+  }
+
   function createItemInList() {
     const list = _sp.web.lists.getById(props.listGuid);
     console.log(list);
@@ -287,7 +296,7 @@ const MyLinks = (props: IMyLinksProps) => {
               <h3>Rediger mine lenker</h3>
               <ActionButton
                 iconProps={addLinkIcon}
-                onClick={() => addItemState()}
+                onClick={() => {addItemState(); newLinkFromList ? setNewLinkFromList(!newLinkFromList) : ""}}
                 className={styles.newButtons}
               >
                 Ny egendefinert lenke
@@ -295,7 +304,7 @@ const MyLinks = (props: IMyLinksProps) => {
              
               <ActionButton
                 iconProps={addLinkIcon}
-                onClick={() => setNewLinkFromList(!newLinkFromList)}
+                onClick={() => {setNewLinkFromList(!newLinkFromList);closeEditForms()}}
                 className={styles.newButtons}
               >
                 Ny lenke fra liste
@@ -311,7 +320,7 @@ const MyLinks = (props: IMyLinksProps) => {
                     listGuid2={props.listGuid2}
                     context={props.context}
                   ></FluentUiDropdown>
-                  <DefaultButton className={styles.lukkButton} onClick={() => {setNewLinkFromList(!newLinkFromList); console.log(predefinedLinksOptions)}}>Lukk</DefaultButton>
+                  <DefaultButton className={styles.lukkButton} onClick={() => {setNewLinkFromList(!newLinkFromList); getMyLinksItems()}}>Lukk</DefaultButton>
                 </div>
               ) : (
                 ""
@@ -338,23 +347,6 @@ const MyLinks = (props: IMyLinksProps) => {
                     )}
                     {o.edit ? (
                       <div className={styles.editForm}>
-                        <div className={styles.iconField}>
-                          <Icon
-                            iconName={currentIcon}
-                            className={styles.editIcon}
-                          ></Icon>
-                        </div>
-                        <div className={styles.iconField}>
-                          <IconPicker
-                            buttonLabel={"Sett ikon"}
-                            onChange={(iconName: string) => {
-                              setIcon(iconName);
-                            }}
-                            onSave={(iconName: string) => {
-                              setIcon(iconName);
-                            }}
-                          />
-                        </div>
                         <div className={styles.editFields}>
                           <TextField
                             label="Tittel"
@@ -382,6 +374,23 @@ const MyLinks = (props: IMyLinksProps) => {
                             }
                             name="Link"
                           ></TextField>
+                        </div>
+                        <div className={styles.iconField}>
+                          <Icon
+                            iconName={currentIcon}
+                            className={styles.editIcon}
+                          ></Icon>
+                        </div>
+                        <div className={styles.iconField}>
+                          <IconPicker
+                            buttonLabel={"Sett ikon"}
+                            onChange={(iconName: string) => {
+                              setIcon(iconName);
+                            }}
+                            onSave={(iconName: string) => {
+                              setIcon(iconName);
+                            }}
+                          />
                         </div>
                         <div className={styles.editFields}>
                           <Checkbox
