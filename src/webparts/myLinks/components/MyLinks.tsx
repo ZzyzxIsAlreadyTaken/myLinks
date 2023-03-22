@@ -11,7 +11,6 @@ import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 import { ActionButton } from "office-ui-fabric-react/lib/Button";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-
 import { DefaultButton, IconButton } from "@fluentui/react/lib/Button";
 import { useId, useBoolean } from "@fluentui/react-hooks";
 import {
@@ -51,6 +50,7 @@ const MyLinks = (props: IMyLinksProps) => {
   });
   const [newLinkFromList, setNewLinkFromList] = useState(false);
   const [showEgendefinerte, setshowEgendefinerte] = useState(false);
+  const [showFelleslenker, setshowFelleslenker] = useState(false);
 
   function addItemState() {
     const newItem = {} as IMYLINKS;
@@ -430,10 +430,10 @@ const MyLinks = (props: IMyLinksProps) => {
         ""
       )}
       {/* Adminlinks */}
-      <div className={styles.linkHeader}>Felleslenker</div>
+      <div className={styles.linkHeader}>Felleslenker <Icon style={{cursor: "pointer"}} onClick={() => setshowFelleslenker(!showFelleslenker)} iconName={showFelleslenker ? "ChevronDown" : "ChevronUp"}></Icon></div>
       {props.listGuid && props.listGuid2
-        ? myAdminLinksItems.filter((item) => {if (item.Valgfri == false){return {item}} }).map((o: IMYADMINLINKS, index: number) => { 
-            return (
+        ? (showFelleslenker ? <>{myAdminLinksItems.filter((item) => {if (item.Valgfri == false){return {item}} }).map((o: IMYADMINLINKS, index: number) => { 
+            return ( 
               <div key={index}>
                 <Icon iconName="Link"></Icon>
                 {o.openinnewtab ? (
@@ -454,10 +454,10 @@ const MyLinks = (props: IMyLinksProps) => {
               </div>
             );
           })
-        : ""}
+      }</> : ""): ""}
       {/* My links */}
       {props.listGuid && props.listGuid2 ? (
-        <div className={styles.linkHeader}>Egendefinerte lenker <Icon onClick={() => setshowEgendefinerte(!showEgendefinerte)} iconName={showEgendefinerte ? "ChevronDown" : "ChevronUp"}></Icon></div>
+        <div className={styles.linkHeader}>Egendefinerte lenker <Icon style={{cursor: "pointer"}} onClick={() => setshowEgendefinerte(!showEgendefinerte)} iconName={showEgendefinerte ? "ChevronDown" : "ChevronUp"}></Icon></div>
       ) : (
         ""
       )}
