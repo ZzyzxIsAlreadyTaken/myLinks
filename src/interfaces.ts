@@ -6,6 +6,7 @@ export interface IMYLINKS {
     openinnewtab: boolean;
     edit: boolean;
     add: boolean;
+    Sortering: number;
 }
 
 export interface IMYADMINLINKS{
@@ -14,4 +15,5 @@ export interface IMYADMINLINKS{
     Link: string;
     openinnewtab: boolean;
     Valgfri: boolean;
+    Sortering: number;
 }

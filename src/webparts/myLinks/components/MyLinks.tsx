@@ -47,6 +47,7 @@ const MyLinks = (props: IMyLinksProps) => {
     Link: "",
     openinnewtab: false,
     Icon: "Link",
+    Sortering: null,
   });
   const [newLinkFromList, setNewLinkFromList] = useState(false);
   const [showEgendefinerte, setshowEgendefinerte] = useState(false);
@@ -62,10 +63,15 @@ const MyLinks = (props: IMyLinksProps) => {
       }),
     ];
 
+    const lastItemValueInnewMyLinks = newMyLinks[newMyLinks.length -1].Sortering
+
     newMyLinks.unshift(newItem);
     newItem.edit = true;
     newItem.add = true;
     newItem.Icon = "Link";
+    newItem.Sortering = lastItemValueInnewMyLinks + 1;
+    currentForm.Sortering = newItem.Sortering;
+    console.log(newItem.Sortering);
     console.log(newMyLinks);
     setMyLinksItems(newMyLinks);
   }
@@ -82,7 +88,7 @@ const MyLinks = (props: IMyLinksProps) => {
   function createItemInList() {
     const list = _sp.web.lists.getById(props.listGuid);
     console.log(list);
-    console.log(currentForm.Title, currentIcon, currentForm.Link);
+    console.log(currentForm.Title, currentIcon, currentForm.Link, currentForm.Sortering);
     list.items.add({
       Title: currentForm.Title,
       Icon: currentIcon,
@@ -90,7 +96,8 @@ const MyLinks = (props: IMyLinksProps) => {
         Description: currentForm.Title,
         Url: currentForm.Link,
       },
-      openinnewtab: currentForm.openinnewtab
+      openinnewtab: currentForm.openinnewtab,
+      Sortering: currentForm.Sortering,
     });
     const newMyLinks = [
       ...myLinksItems.map((item) => {
@@ -99,6 +106,17 @@ const MyLinks = (props: IMyLinksProps) => {
         return item;
       }),
     ];
+    newMyLinks.push({
+      Id: 99,
+      Title: currentForm.Title,
+      Link: currentForm.Link,
+      Icon: currentIcon, 
+      openinnewtab: currentForm.openinnewtab,
+      edit: false,
+      add: false,
+      Sortering: currentForm.Sortering
+    })
+    console.log(newMyLinks[newMyLinks.length -1])
     setMyLinksItems(newMyLinks);
   }
 
@@ -126,6 +144,7 @@ const MyLinks = (props: IMyLinksProps) => {
       Link: newMyLinks[index].Link,
       openinnewtab: newMyLinks[index].openinnewtab,
       Icon: newMyLinks[index].Icon,
+      Sortering: newMyLinks[index].Sortering,
     });
     setIcon(newMyLinks[index].Icon);
     setMyLinksItems(newMyLinks);
@@ -154,6 +173,7 @@ const MyLinks = (props: IMyLinksProps) => {
         Url: currentForm.Link,
       },
       openinnewtab: currentForm.openinnewtab,
+      Sortering: currentForm.Sortering,
     });
     const newMyLinks = [
       ...myLinksItems.map((item) => {
@@ -184,7 +204,7 @@ const MyLinks = (props: IMyLinksProps) => {
     const items = _sp.web.lists
       .getById(props.listGuid)
       .items.select()
-      .orderBy("Title", true)();
+      .orderBy("Sortering", true)();
 
     console.log("mylinks Items", items);
 
@@ -198,6 +218,7 @@ const MyLinks = (props: IMyLinksProps) => {
           openinnewtab: item.openinnewtab,
           edit: false,
           add: false,
+          Sortering: item.Sortering
         };
       })
     );
@@ -213,7 +234,7 @@ const MyLinks = (props: IMyLinksProps) => {
     const items = _sp.web.lists
       .getById(props.listGuid2)
       .items.select()
-      .orderBy("Title", true)();
+      .orderBy("Sortering", true)();
 
     console.log("mylinksAdmin Items", items);
 
@@ -224,7 +245,8 @@ const MyLinks = (props: IMyLinksProps) => {
           Title: item.Title,
           Link: item.Link.Url,
           openinnewtab: item.openinnewtab,
-          Valgfri: item.Valgfri
+          Valgfri: item.Valgfri,
+          Sortering: item.Sortering
         };
       })
     );
@@ -341,6 +363,9 @@ const MyLinks = (props: IMyLinksProps) => {
                           iconProps={addDeleteIcon}
                           onClick={() => deleteItem(o.Id, o.Title)}
                         ></IconButton>
+                        {index == 0 ? <><Icon iconName="ChevronDown"></Icon></> : "" }
+                        {index > 0 ? <><Icon iconName="ChevronUp"></Icon></> : "" }
+                        {(index > 0 && index < myLinksItems.length - 1) ? <><Icon iconName="ChevronDown"></Icon></> : "" }
                       </>
                     ) : (
                       ""
