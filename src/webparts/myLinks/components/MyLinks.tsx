@@ -37,6 +37,8 @@ const addEdit2Icon: IIconProps = {
 };
 const addDeleteIcon: IIconProps = { iconName: "Delete" };
 const cancel: IIconProps = { iconName: "Cancel" };
+const ChevronDownIcon: IIconProps = { iconName: "ChevronDown"}
+const ChevronUpIcon: IIconProps = { iconName: "ChevronUp"}
 
 const MyLinks = (props: IMyLinksProps) => {
   // * Hooks
@@ -363,9 +365,9 @@ const MyLinks = (props: IMyLinksProps) => {
                           iconProps={addDeleteIcon}
                           onClick={() => deleteItem(o.Id, o.Title)}
                         ></IconButton>
-                        {index == 0 ? <><Icon iconName="ChevronDown"></Icon></> : "" }
-                        {index > 0 ? <><Icon iconName="ChevronUp"></Icon></> : "" }
-                        {(index > 0 && index < myLinksItems.length - 1) ? <><Icon iconName="ChevronDown"></Icon></> : "" }
+                        {index == 0 ? <><IconButton iconProps={ChevronDownIcon}></IconButton></> : "" }
+                        {index > 0 ? <><IconButton iconProps={ChevronUpIcon}></IconButton></> : "" }
+                        {(index > 0 && index < myLinksItems.length - 1) ? <><IconButton iconProps={ChevronDownIcon}></IconButton></> : "" }
                       </>
                     ) : (
                       ""
