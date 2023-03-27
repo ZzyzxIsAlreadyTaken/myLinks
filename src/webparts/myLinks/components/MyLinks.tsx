@@ -42,6 +42,8 @@ const ChevronUpIcon: IIconProps = { iconName: "ChevronUp"}
 
 const MyLinks = (props: IMyLinksProps) => {
   // * Hooks
+   //Mylinks Items
+  const [myLinksItems, setMyLinksItems] = useState<IMYLINKS[]>([]);
   const [DeleteInfo, setDeleteInfo] = useState([]);
   const [currentIcon, setIcon] = useState("Link");
   const [currentForm, setCurrentForm] = useState({
@@ -54,6 +56,10 @@ const MyLinks = (props: IMyLinksProps) => {
   const [newLinkFromList, setNewLinkFromList] = useState(false);
   const [showEgendefinerte, setshowEgendefinerte] = useState(false);
   const [showFelleslenker, setshowFelleslenker] = useState(false);
+  const [showLagreSorteringsButton, setShowLagreSorteringsButton] = useState(false);
+
+  const _sp: SPFI = getSP(props.context);
+  const [batchedSP, execute] = _sp.batched();
 
   function addItemState() {
     const newItem = {} as IMYLINKS;
@@ -78,16 +84,17 @@ const MyLinks = (props: IMyLinksProps) => {
     setMyLinksItems(newMyLinks);
   }
 
-  function closeEditForms(){
+  function closeEditForms(): void{
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.edit = false;
         return item;
       }),
     ];
+    setMyLinksItems(newMyLinks);
   }
 
-  function createItemInList() {
+  function createItemInList(): void {
     const list = _sp.web.lists.getById(props.listGuid);
     console.log(list);
     console.log(currentForm.Title, currentIcon, currentForm.Link, currentForm.Sortering);
@@ -155,11 +162,20 @@ const MyLinks = (props: IMyLinksProps) => {
   function deleteItem(id: number, title: string): void {
     const list = _sp.web.lists.getById(props.listGuid);
     list.items.getById(id).delete();
-    {
-      myLinksItems.map(() =>
-        setMyLinksItems(myLinksItems.filter((a) => a.Id !== id))
-      );
-    }
+    
+    const removedItem = myLinksItems.find(item => item.Id === id)
+    console.log(removedItem.Sortering + removedItem.Title)  
+    setMyLinksItems(myLinksItems.filter((a) => a.Id !== id))
+
+    const newMyLinks = [
+      ...myLinksItems.map((item) => {
+        item.Sortering > removedItem.Sortering ? item.Sortering-- : ""
+        return item;
+      }),
+    ];
+      
+    setMyLinksItems(newMyLinks);
+    saveMultipleListItems();
     let deleteInfoTXT = "Du har slettet: " + title;
     setDeleteInfo([deleteInfoTXT]);
   }
@@ -196,10 +212,7 @@ const MyLinks = (props: IMyLinksProps) => {
   const LOG_SOURCE = "MyLinks Webpart";
   const LIST_NAME = "mylinks";
 
-  let _sp: SPFI = getSP(props.context);
 
-  //Mylinks Items
-  const [myLinksItems, setMyLinksItems] = useState<IMYLINKS[]>([]);
 
   const getMyLinksItems = async () => {
     console.log("context", _sp);
@@ -254,6 +267,29 @@ const MyLinks = (props: IMyLinksProps) => {
     );
   };
 
+  function sortLinks(index:number, sortUp:boolean){
+
+    const newMyLinks = [
+      ...myLinksItems.map((item) => {
+        return item;
+      }),
+    ];
+    if(sortUp) {
+      newMyLinks[index].Sortering =  newMyLinks[index + 0].Sortering + 1 
+      newMyLinks[index + 1].Sortering = newMyLinks[index + 1].Sortering - 1
+    } else {
+      newMyLinks[index].Sortering =  newMyLinks[index + 0].Sortering + - 1 
+      newMyLinks[index + - 1].Sortering = newMyLinks[index + - 1].Sortering + 1
+    }
+    
+    
+    newMyLinks.sort((s1, s2) => {
+      return s1.Sortering - s2.Sortering;
+  });
+
+    setMyLinksItems(newMyLinks);
+    setShowLagreSorteringsButton(true);
+  }
   //
 
   const [isModalOpen, { setTrue: showModal, setFalse: hideModal }] =
@@ -273,22 +309,28 @@ const MyLinks = (props: IMyLinksProps) => {
     }
   }, [props]);
 
-  // let newArray : {text: string, key: string|number} = []
-  // myAdminLinksItems.map((o: IMYADMINLINKS, index: number) => {
-  //   newArray.push()
-  // })
+  const saveMultipleListItems = async () => {
+    const list = batchedSP.web.lists.getById(props.listGuid);
+    myLinksItems.forEach(item => {
+      list.items.getById(item.Id).update({ 
+        Sortering: item.Sortering
+      }).then(b => {
+      console.log(b);
+      });
+      // Executes the batched calls
+      
+    });
+    await execute();
+  }
 
   let optionsArray = myAdminLinksItems.filter((item) => {if (item.Valgfri == true){return {item}} }).map(item => ({text: item.Title, key: item.Id}))
   
-  // console.log("optionsarray3",optionsArray3);
+
   const predefinedLinksOptions: IDropdownOption[] = optionsArray
   
   
   return (
-    // <>
-    // <h1>Hello World</h1>
-    // <pre>{JSON.stringify(myLinksItems,null,2)}</pre>
-    // </>
+
     <>
       {props.listGuid && props.listGuid2 ? (
         <>
@@ -365,9 +407,9 @@ const MyLinks = (props: IMyLinksProps) => {
                           iconProps={addDeleteIcon}
                           onClick={() => deleteItem(o.Id, o.Title)}
                         ></IconButton>
-                        {index == 0 ? <><IconButton iconProps={ChevronDownIcon}></IconButton></> : "" }
-                        {index > 0 ? <><IconButton iconProps={ChevronUpIcon}></IconButton></> : "" }
-                        {(index > 0 && index < myLinksItems.length - 1) ? <><IconButton iconProps={ChevronDownIcon}></IconButton></> : "" }
+                        {index == 0 ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)}></IconButton></> : "" }
+                        {index > 0 ? <><IconButton iconProps={ChevronUpIcon} onClick={()=>sortLinks(index, false)}></IconButton></> : "" }
+                        {(index > 0 && index < myLinksItems.length - 1) ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)}></IconButton></> : "" }
                       </>
                     ) : (
                       ""
@@ -459,6 +501,7 @@ const MyLinks = (props: IMyLinksProps) => {
                 );
               })}
               <span className={styles.deleteInfo}>{DeleteInfo}</span>
+              {showLagreSorteringsButton ? <DefaultButton onClick={()=>{saveMultipleListItems(); setShowLagreSorteringsButton(false)}}>Lagre ny sortering</DefaultButton>: ""}
             </div>
           </Modal>
         </>
@@ -480,7 +523,7 @@ const MyLinks = (props: IMyLinksProps) => {
                     </a>
                   </>
                 ) : (
-                  <>
+                  <> 
                     {" "}
                     <a href={o.Link} rel="noreferrer" target="_self">
                       {o.Title}
