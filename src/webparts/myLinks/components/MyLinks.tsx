@@ -16,9 +16,7 @@ import { useId, useBoolean } from "@fluentui/react-hooks";
 import {
   Checkbox,
   Modal,
-  Dropdown,
   TextField,
-  DropdownMenuItemType,
   IDropdownOption,
 } from "office-ui-fabric-react";
 import { Item } from "@pnp/sp/items";
@@ -94,11 +92,11 @@ const MyLinks = (props: IMyLinksProps) => {
     setMyLinksItems(newMyLinks);
   }
 
-  function createItemInList(): void {
+  async function createItemInList(): Promise<void> {
     const list = _sp.web.lists.getById(props.listGuid);
     console.log(list);
     console.log(currentForm.Title, currentIcon, currentForm.Link, currentForm.Sortering);
-    list.items.add({
+    await list.items.add({
       Title: currentForm.Title,
       Icon: currentIcon,
       Link: {
@@ -129,7 +127,7 @@ const MyLinks = (props: IMyLinksProps) => {
     setMyLinksItems(newMyLinks);
   }
 
-  function cancelButton() {
+  function cancelButton(): void {
     console.log("Cancel");
     const newMyLinks = [
       ...myLinksItems.map((item) => {
@@ -140,7 +138,7 @@ const MyLinks = (props: IMyLinksProps) => {
     setMyLinksItems(newMyLinks);
   }
 
-  function getEditItem(id: number, index: number) {
+  function getEditItem(id: number, index: number): void {
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.edit = false;
@@ -158,10 +156,25 @@ const MyLinks = (props: IMyLinksProps) => {
     setIcon(newMyLinks[index].Icon);
     setMyLinksItems(newMyLinks);
   }
+  
+  const saveMultipleListItems = async () :Promise<void> => {
+    const list =  batchedSP.web.lists.getById(props.listGuid);
+    myLinksItems.forEach(async item => {
+      console.log(item.Title + item.Sortering)
+       await list.items.getById(item.Id).update({ 
+        Sortering: item.Sortering
+      }).then(b => {
+      console.log(b);
+      });
+      // Executes the batched calls
+      
+    });
+    await execute();
+  }
 
-  function deleteItem(id: number, title: string): void {
+  async function deleteItem(id: number, title: string): Promise<void> {
     const list = _sp.web.lists.getById(props.listGuid);
-    list.items.getById(id).delete();
+    await list.items.getById(id).delete();
     
     const removedItem = myLinksItems.find(item => item.Id === id)
     console.log(removedItem.Sortering + removedItem.Title)  
@@ -169,21 +182,26 @@ const MyLinks = (props: IMyLinksProps) => {
 
     const newMyLinks = [
       ...myLinksItems.map((item) => {
-        item.Sortering > removedItem.Sortering ? item.Sortering-- : ""
+        if (item.Sortering > removedItem.Sortering) {
+          item.Sortering = item.Sortering--
+        } 
         return item;
       }),
     ];
       
+ 
+
     setMyLinksItems(newMyLinks);
-    saveMultipleListItems();
-    let deleteInfoTXT = "Du har slettet: " + title;
+    // eslint-disable-next-line no-void
+    void saveMultipleListItems();
+    const deleteInfoTXT = "Du har slettet: " + title;
     setDeleteInfo([deleteInfoTXT]);
   }
 
-  function saveItem(id: number, index: number) {
+  async function saveItem(id: number, index: number): Promise<void> {
     const list = _sp.web.lists.getById(props.listGuid);
 
-    list.items.getById(id).update({
+    await list.items.getById(id).update({
       Title: currentForm.Title,
       Icon: currentIcon,
       Link: {
@@ -214,7 +232,7 @@ const MyLinks = (props: IMyLinksProps) => {
 
 
 
-  const getMyLinksItems = async () => {
+  const getMyLinksItems = async () : Promise<void> => {
     console.log("context", _sp);
     const items = _sp.web.lists
       .getById(props.listGuid)
@@ -299,29 +317,17 @@ const MyLinks = (props: IMyLinksProps) => {
 
   useEffect(() => {
     if (props.listGuid && props.listGuid != "") {
-      getMyLinksItems();
+      // eslint-disable-next-line no-void
+      void getMyLinksItems();
     }
   }, [props]);
 
   useEffect(() => {
     if (props.listGuid2 && props.listGuid2 != "") {
-      getMyAdminLinksItems();
+      // eslint-disable-next-line no-void
+      void getMyAdminLinksItems();
     }
   }, [props]);
-
-  const saveMultipleListItems = async () => {
-    const list = batchedSP.web.lists.getById(props.listGuid);
-    myLinksItems.forEach(item => {
-      list.items.getById(item.Id).update({ 
-        Sortering: item.Sortering
-      }).then(b => {
-      console.log(b);
-      });
-      // Executes the batched calls
-      
-    });
-    await execute();
-  }
 
   let optionsArray = myAdminLinksItems.filter((item) => {if (item.Valgfri == true){return {item}} }).map(item => ({text: item.Title, key: item.Id}))
   
@@ -345,7 +351,7 @@ const MyLinks = (props: IMyLinksProps) => {
             isOpen={isModalOpen}
             onDismiss={() => {
               hideModal();
-              getMyLinksItems();
+              void getMyLinksItems();
             }}
             isBlocking={false}
             forceFocusInsideTrap={false}
@@ -355,9 +361,9 @@ const MyLinks = (props: IMyLinksProps) => {
               iconProps={cancel}
               onClick={() => {
                 hideModal();
-                getMyLinksItems();
+                void getMyLinksItems();
               }}
-            ></IconButton>
+             />
             <div className={styles.modalWrapper}>
               <h3>Rediger mine lenker</h3>
               <ActionButton
@@ -385,8 +391,9 @@ const MyLinks = (props: IMyLinksProps) => {
                     listGuid={props.listGuid}
                     listGuid2={props.listGuid2}
                     context={props.context}
-                  ></FluentUiDropdown>
-                  <DefaultButton className={styles.lukkButton} onClick={() => {setNewLinkFromList(!newLinkFromList); getMyLinksItems()}}>Lukk</DefaultButton>
+                   />
+                  {/* eslint-disable-next-line no-void */}
+                  <DefaultButton className={styles.lukkButton} onClick={() => {setNewLinkFromList(!newLinkFromList); void getMyLinksItems()}}>Lukk</DefaultButton>
                 </div>
               ) : (
                 ""
@@ -402,14 +409,14 @@ const MyLinks = (props: IMyLinksProps) => {
                         <IconButton
                           iconProps={addEditIcon}
                           onClick={() => getEditItem(o.Id, index)}
-                        ></IconButton>
+                         />
                         <IconButton
                           iconProps={addDeleteIcon}
                           onClick={() => deleteItem(o.Id, o.Title)}
-                        ></IconButton>
-                        {index == 0 ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)}></IconButton></> : "" }
-                        {index > 0 ? <><IconButton iconProps={ChevronUpIcon} onClick={()=>sortLinks(index, false)}></IconButton></> : "" }
-                        {(index > 0 && index < myLinksItems.length - 1) ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)}></IconButton></> : "" }
+                         />
+                        {index == 0 ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)} /></> : "" }
+                        {index > 0 ? <><IconButton iconProps={ChevronUpIcon} onClick={()=>sortLinks(index, false)} /></> : "" }
+                        {(index > 0 && index < myLinksItems.length - 1) ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)} /></> : "" }
                       </>
                     ) : (
                       ""
@@ -428,7 +435,7 @@ const MyLinks = (props: IMyLinksProps) => {
                               })
                             }
                             name="Title"
-                          ></TextField>
+                           />
                         </div>
                         <div className={styles.editFields}>
                           <TextField
@@ -442,13 +449,13 @@ const MyLinks = (props: IMyLinksProps) => {
                               })
                             }
                             name="Link"
-                          ></TextField>
+                           />
                         </div>
                         <div className={styles.iconField}>
                           <Icon
                             iconName={currentIcon}
                             className={styles.editIcon}
-                          ></Icon>
+                           />
                         </div>
                         <div className={styles.iconField}>
                           <IconPicker
@@ -472,14 +479,17 @@ const MyLinks = (props: IMyLinksProps) => {
                               })
                             }
                             name="openinnewtab"
-                          ></Checkbox>
+                           />
                         </div>
                         <div className={styles.editButtonsContainer}>
                           <PrimaryButton
                             onClick={() => {
+                              // eslint-disable-next-line no-unused-expressions
                               o.add
-                                ? createItemInList()
-                                : saveItem(o.Id, index);
+                                // eslint-disable-next-line no-void
+                                ? void createItemInList()
+                                // eslint-disable-next-line no-void
+                                : void saveItem(o.Id, index);
                             }}
                             className={styles.saveButtons}
                           >
@@ -501,7 +511,8 @@ const MyLinks = (props: IMyLinksProps) => {
                 );
               })}
               <span className={styles.deleteInfo}>{DeleteInfo}</span>
-              {showLagreSorteringsButton ? <DefaultButton onClick={()=>{saveMultipleListItems(); setShowLagreSorteringsButton(false)}}>Lagre ny sortering</DefaultButton>: ""}
+              {/*eslint-disable-next-line no-void*/}
+              {showLagreSorteringsButton ? <DefaultButton onClick={()=>{void saveMultipleListItems(); setShowLagreSorteringsButton(false)}}>Lagre ny sortering</DefaultButton>: ""}
             </div>
           </Modal>
         </>
@@ -509,12 +520,12 @@ const MyLinks = (props: IMyLinksProps) => {
         ""
       )}
       {/* Adminlinks */}
-      <div className={styles.linkHeader}>Felleslenker <Icon style={{cursor: "pointer"}} onClick={() => setshowFelleslenker(!showFelleslenker)} iconName={showFelleslenker ? "ChevronDown" : "ChevronUp"}></Icon></div>
+      <div className={styles.linkHeader}>Felleslenker <Icon style={{cursor: "pointer"}} onClick={() => setshowFelleslenker(!showFelleslenker)} iconName={showFelleslenker ? "ChevronDown" : "ChevronUp"} /></div>
       {props.listGuid && props.listGuid2
         ? (showFelleslenker ? <>{myAdminLinksItems.filter((item) => {if (item.Valgfri == false){return {item}} }).map((o: IMYADMINLINKS, index: number) => { 
             return ( 
               <div key={index}>
-                <Icon iconName="Link"></Icon>
+                <Icon iconName="Link" />
                 {o.openinnewtab ? (
                   <>
                     {" "}
@@ -536,14 +547,14 @@ const MyLinks = (props: IMyLinksProps) => {
       }</> : ""): ""}
       {/* My links */}
       {props.listGuid && props.listGuid2 ? (
-        <div className={styles.linkHeader}>Egendefinerte lenker <Icon style={{cursor: "pointer"}} onClick={() => setshowEgendefinerte(!showEgendefinerte)} iconName={showEgendefinerte ? "ChevronDown" : "ChevronUp"}></Icon></div>
+        <div className={styles.linkHeader}>Egendefinerte lenker <Icon style={{cursor: "pointer"}} onClick={() => setshowEgendefinerte(!showEgendefinerte)} iconName={showEgendefinerte ? "ChevronDown" : "ChevronUp"} /></div>
       ) : (
         ""
       )}
       {props.listGuid && props.listGuid2 ? (<>{showEgendefinerte ?  <>{myLinksItems.map((o: IMYLINKS, index: number) => {
           return (
             <div key={index}>
-              <Icon iconName={o.Icon}></Icon>
+              <Icon iconName={o.Icon} />
               {o.openinnewtab ? (
                 <>
                   {" "}
