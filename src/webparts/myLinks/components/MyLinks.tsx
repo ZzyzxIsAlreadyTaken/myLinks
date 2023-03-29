@@ -38,6 +38,7 @@ const cancel: IIconProps = { iconName: "Cancel" };
 const ChevronDownIcon: IIconProps = { iconName: "ChevronDown"}
 const ChevronUpIcon: IIconProps = { iconName: "ChevronUp"}
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const MyLinks = (props: IMyLinksProps) => {
   // * Hooks
    //Mylinks Items
@@ -59,7 +60,7 @@ const MyLinks = (props: IMyLinksProps) => {
   const _sp: SPFI = getSP(props.context);
   const [batchedSP, execute] = _sp.batched();
 
-  function addItemState() {
+  function addItemState(): void {
     const newItem = {} as IMYLINKS;
 
     const newMyLinks = [
@@ -71,7 +72,7 @@ const MyLinks = (props: IMyLinksProps) => {
 
     const lastItemValueInnewMyLinks = newMyLinks[newMyLinks.length -1].Sortering
 
-    newMyLinks.unshift(newItem);
+    newMyLinks.push(newItem);
     newItem.edit = true;
     newItem.add = true;
     newItem.Icon = "Link";
@@ -91,6 +92,30 @@ const MyLinks = (props: IMyLinksProps) => {
     ];
     setMyLinksItems(newMyLinks);
   }
+    const getMyLinksItems = async () : Promise<void> => {
+    console.log("context", _sp);
+    const items = _sp.web.lists
+      .getById(props.listGuid)
+      .items.select()
+      .orderBy("Sortering", true)();
+
+    console.log("mylinks Items", items);
+
+    setMyLinksItems(
+      (await items).map((item: any) => {
+        return {
+          Id: item.ID,
+          Title: item.Title,
+          Icon: item.Icon,
+          Link: item.Link.Url,
+          openinnewtab: item.openinnewtab,
+          edit: false,
+          add: false,
+          Sortering: item.Sortering
+        };
+      })
+    );
+  };
 
   async function createItemInList(): Promise<void> {
     const list = _sp.web.lists.getById(props.listGuid);
@@ -113,18 +138,23 @@ const MyLinks = (props: IMyLinksProps) => {
         return item;
       }),
     ];
-    newMyLinks.push({
-      Id: 99,
-      Title: currentForm.Title,
-      Link: currentForm.Link,
-      Icon: currentIcon, 
-      openinnewtab: currentForm.openinnewtab,
-      edit: false,
-      add: false,
-      Sortering: currentForm.Sortering
-    })
-    console.log(newMyLinks[newMyLinks.length -1])
     setMyLinksItems(newMyLinks);
+    console.log(myLinksItems);
+    // eslint-disable-next-line no-void
+    void getMyLinksItems();
+
+    // newMyLinks.push({
+    //   Id: null,
+    //   Title: currentForm.Title,
+    //   Link: currentForm.Link,
+    //   Icon: currentIcon, 
+    //   openinnewtab: currentForm.openinnewtab,
+    //   edit: false,
+    //   add: false,
+    //   Sortering: currentForm.Sortering
+    // })
+    // console.log(newMyLinks[newMyLinks.length -1])
+    
   }
 
   function cancelButton(): void {
@@ -157,43 +187,46 @@ const MyLinks = (props: IMyLinksProps) => {
     setMyLinksItems(newMyLinks);
   }
   
-  const saveMultipleListItems = async () :Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const saveMultipleListItems = (arr: any): void => {
+    console.log("-------Kjører saveMultipleListItems---------")
     const list =  batchedSP.web.lists.getById(props.listGuid);
-    myLinksItems.forEach(async item => {
+    arr.forEach(async (item: { Title: any; Sortering: any; Id: number; }, index: number) => {
       console.log(item.Title + item.Sortering)
        await list.items.getById(item.Id).update({ 
-        Sortering: item.Sortering
+        Sortering: index + 1
       }).then(b => {
-      console.log(b);
+      console.log("sorterer:", b);
       });
       // Executes the batched calls
       
     });
-    await execute();
+    // eslint-disable-next-line no-void
+    void execute();
+    setMyLinksItems(arr);
   }
 
-  async function deleteItem(id: number, title: string): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  function deleteItem(id: number, title: string){
+    console.log("-------Kjører deleteITem---------")
     const list = _sp.web.lists.getById(props.listGuid);
-    await list.items.getById(id).delete();
+    // eslint-disable-next-line no-void
+    void list.items.getById(id).delete();
     
     const removedItem = myLinksItems.find(item => item.Id === id)
-    console.log(removedItem.Sortering + removedItem.Title)  
-    setMyLinksItems(myLinksItems.filter((a) => a.Id !== id))
+    console.log("Fjernet lenke: ",removedItem.Sortering + removedItem.Title)  
 
-    const newMyLinks = [
-      ...myLinksItems.map((item) => {
-        if (item.Sortering > removedItem.Sortering) {
-          item.Sortering = item.Sortering--
-        } 
-        return item;
-      }),
-    ];
-      
- 
+    const filteredLinks = myLinksItems.filter((a) => a.Id !== id)
+    
+    console.log("Filteredlinks ", filteredLinks)
 
-    setMyLinksItems(newMyLinks);
+
+     console.log("MyLinksItems ", myLinksItems);
+    saveMultipleListItems(filteredLinks);
+  
+    
     // eslint-disable-next-line no-void
-    void saveMultipleListItems();
+    
     const deleteInfoTXT = "Du har slettet: " + title;
     setDeleteInfo([deleteInfoTXT]);
   }
@@ -223,7 +256,7 @@ const MyLinks = (props: IMyLinksProps) => {
     newMyLinks[index].openinnewtab = currentForm.openinnewtab;
     newMyLinks[index].Icon = currentIcon;
 
-    console.log(currentForm);
+
     setMyLinksItems(newMyLinks);
   }
 
@@ -232,37 +265,14 @@ const MyLinks = (props: IMyLinksProps) => {
 
 
 
-  const getMyLinksItems = async () : Promise<void> => {
-    console.log("context", _sp);
-    const items = _sp.web.lists
-      .getById(props.listGuid)
-      .items.select()
-      .orderBy("Sortering", true)();
 
-    console.log("mylinks Items", items);
-
-    setMyLinksItems(
-      (await items).map((item: any) => {
-        return {
-          Id: item.ID,
-          Title: item.Title,
-          Icon: item.Icon,
-          Link: item.Link.Url,
-          openinnewtab: item.openinnewtab,
-          edit: false,
-          add: false,
-          Sortering: item.Sortering
-        };
-      })
-    );
-  };
 
   //Myadminlinks items
   const [myAdminLinksItems, setMyAdminLinksItems] = useState<IMYADMINLINKS[]>(
     []
   );
 
-  const getMyAdminLinksItems = async () => {
+  const getMyAdminLinksItems = async () : Promise<void> => {
     console.log("context", _sp);
     const items = _sp.web.lists
       .getById(props.listGuid2)
@@ -404,7 +414,7 @@ const MyLinks = (props: IMyLinksProps) => {
                   <div key={index}>
                     {o.Title ? (
                       <>
-                        <Icon iconName={o.Icon}></Icon>
+                        <Icon iconName={o.Icon}/>
                         <span className={styles.modalLinkTitle}>{o.Title}</span>
                         <IconButton
                           iconProps={addEditIcon}
@@ -412,9 +422,10 @@ const MyLinks = (props: IMyLinksProps) => {
                          />
                         <IconButton
                           iconProps={addDeleteIcon}
-                          onClick={() => deleteItem(o.Id, o.Title)}
+                          // eslint-disable-next-line no-void
+                          onClick={() => {void deleteItem(o.Id, o.Title);}}
                          />
-                        {index == 0 ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)} /></> : "" }
+                        {index === 0 ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)} /></> : "" }
                         {index > 0 ? <><IconButton iconProps={ChevronUpIcon} onClick={()=>sortLinks(index, false)} /></> : "" }
                         {(index > 0 && index < myLinksItems.length - 1) ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)} /></> : "" }
                       </>
@@ -512,7 +523,7 @@ const MyLinks = (props: IMyLinksProps) => {
               })}
               <span className={styles.deleteInfo}>{DeleteInfo}</span>
               {/*eslint-disable-next-line no-void*/}
-              {showLagreSorteringsButton ? <DefaultButton onClick={()=>{void saveMultipleListItems(); setShowLagreSorteringsButton(false)}}>Lagre ny sortering</DefaultButton>: ""}
+              {showLagreSorteringsButton ? <DefaultButton onClick={()=>{void saveMultipleListItems(myLinksItems); setShowLagreSorteringsButton(false)}}>Lagre ny sortering</DefaultButton>: ""}
             </div>
           </Modal>
         </>
