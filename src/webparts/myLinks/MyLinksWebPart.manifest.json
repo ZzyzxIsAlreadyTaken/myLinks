@@ -22,7 +22,10 @@
     "description": { "default": "myLinks description" },
     "officeFabricIconFontName": "Link",
     "properties": {
-      "description": "myLinks"
+      "title": "myLinks",
+      "description": "myLinks",
+      "listTitleMylinks": "Mine lenker",
+      "listTitleAdminlinks": "Felleslenker"
     }
   }]
 }

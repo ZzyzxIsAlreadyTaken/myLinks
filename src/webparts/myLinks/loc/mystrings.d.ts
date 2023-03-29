@@ -2,6 +2,8 @@ declare interface IMyLinksWebPartStrings {
   PropertyPaneDescription: string;
   BasicGroupName: string;
   DescriptionFieldLabel: string;
+  MyLinksLabel: string;
+  MyAdminLinksLabel: string;
   AppLocalEnvironmentSharePoint: string;
   AppLocalEnvironmentTeams: string;
   AppSharePointEnvironment: string;

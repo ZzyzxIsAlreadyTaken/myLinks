@@ -22,6 +22,8 @@ export interface IMyLinksWebPartProps {
   list: string;
   title: string;
   list2: string;
+  listTitleMylinks: string;
+  listTitleAdminlinks: string;
 }
 
 export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPartProps> {
@@ -32,12 +34,14 @@ export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPar
       {
         description: this.properties.description,
         context: this.context,
+        listTitleMylinks: this.properties.listTitleMylinks,
         listGuid: this.properties.list,
         title: this.properties.title,
         displayMode: this.displayMode,
         updateProperty: (value: string) => {
         this.properties.title = value;
         },
+        listTitleAdminlinks: this.properties.listTitleAdminlinks,
         listGuid2: this.properties.list2
       }
     );
@@ -69,6 +73,12 @@ export default class MyLinksWebPart extends BaseClientSideWebPart<IMyLinksWebPar
             {
               groupName: 'Lister',
               groupFields: [
+                PropertyPaneTextField('listTitleMylinks', {
+                  label: strings.MyLinksLabel
+                }),
+                PropertyPaneTextField('listTitleAdminlinks', {
+                  label: strings.  MyAdminLinksLabel
+                }),
                 PropertyFieldListPicker('list', {
                   label: 'Select link list',
                   selectedList: this.properties.list,
