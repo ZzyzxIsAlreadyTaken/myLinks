@@ -66,7 +66,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
     )
     const list = this._sp.web.lists.getById(this.props.listGuid);
     for (const item of newAdminlinksItems){
-       list.items.add({
+       void list.items.add({
           Title: item.Title,
           Link: {
             Description: item.Title,
@@ -116,7 +116,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
         />
         <div>
           <br />
-          <PrimaryButton onClick={e => {this.Save(e);this.forceUpdate()}}>Legg til lenker</PrimaryButton>
+          <PrimaryButton onClick={e => {void this.Save(e);this.forceUpdate()}}>Legg til lenker</PrimaryButton>
           {/* <DefaultButton>Avbryt</DefaultButton> */}
         </div> 
       </div>
