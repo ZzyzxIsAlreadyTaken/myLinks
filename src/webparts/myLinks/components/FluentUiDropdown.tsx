@@ -66,6 +66,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
     )
     const list = this._sp.web.lists.getById(this.props.listGuid);
     for (const item of newAdminlinksItems){
+       // eslint-disable-next-line no-void
        void list.items.add({
           Title: item.Title,
           Link: {
