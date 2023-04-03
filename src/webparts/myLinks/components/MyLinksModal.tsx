@@ -22,7 +22,7 @@ return(
  isOpen={isModalOpen}
  onDismiss={ExitHandler}
  isBlocking={true}
- containerClassName={"modalbox"}>
-</Modal>
+ containerClassName={"modalbox"} 
+ />
 )
 }
