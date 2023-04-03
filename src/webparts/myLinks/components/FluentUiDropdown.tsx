@@ -115,7 +115,6 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
           multiSelect
           options={this.props.multiValueOptions}
           onChange={this.onDropdownMultiChange}
-          className={styles.myDropdown}
         />
         <div>
           <br />
