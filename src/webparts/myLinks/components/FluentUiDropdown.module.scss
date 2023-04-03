@@ -77,3 +77,6 @@
   margin-bottom: 5px;
 }
 
+:global #fluent-default-layer-host{
+  z-index: 10900000 !important;
+}
