@@ -38,12 +38,12 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
 
   public onDropdownMultiChange = async (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): Promise<void> => {
     if (item.selected) {
-      await arr.push(item.key as string);
+      arr.push(item.key as string);
     }
     else {
-      await arr.indexOf(item.key) !== -1 && arr.splice(arr.indexOf(item.key), 1);
+      arr.indexOf(item.key) !== -1 && arr.splice(arr.indexOf(item.key), 1);
     }
-    await this.setState({ multiValueDropdown: arr });
+     this.setState({ multiValueDropdown: arr });
   }
 
   private async Save(e:any) {
@@ -106,6 +106,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
           onChange={this.onDropdownChange}
         />
         <br /> */}
+       {console.log(this.props.multiValueOptions)}
         <Dropdown
           placeholder="Legg til valgfrie lenker"
           defaultSelectedKeys={this.state.multiValueDropdown}
@@ -113,6 +114,7 @@ export default class FluentUiDropdown extends React.Component<IFluentUiDropdownP
           multiSelect
           options={this.props.multiValueOptions}
           onChange={this.onDropdownMultiChange}
+          className={styles.myDropdown}
         />
         <div>
           <br />
