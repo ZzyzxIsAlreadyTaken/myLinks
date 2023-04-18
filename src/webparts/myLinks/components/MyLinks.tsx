@@ -70,7 +70,11 @@ const MyLinks = (props: IMyLinksProps) => {
       }),
     ];
 
-    const lastItemValueInnewMyLinks = newMyLinks[newMyLinks.length -1].Sortering
+    let lastItemValueInnewMyLinks = 0;
+
+    if (newMyLinks.length > 0) {
+      lastItemValueInnewMyLinks = newMyLinks[newMyLinks.length -1].Sortering
+    } 
 
     newMyLinks.push(newItem);
     newItem.edit = true;
@@ -441,6 +445,7 @@ const MyLinks = (props: IMyLinksProps) => {
                             }
                             name="Title"
                            />
+                           <br />
                         </div>
                         <div className={styles.editFields}>
                           <TextField
@@ -454,8 +459,11 @@ const MyLinks = (props: IMyLinksProps) => {
                               })
                             }
                             name="Link"
+                            placeholder="https://"
                            />
+                           Url må starte med https:// eller http://
                         </div>
+                        Lashnan er 
                         <div className={styles.iconField}>
                           <Icon
                             iconName={currentIcon}
