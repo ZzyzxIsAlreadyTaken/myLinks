@@ -58,6 +58,7 @@ const MyLinks = (props: IMyLinksProps) => {
   const [showLagreSorteringsButton, setShowLagreSorteringsButton] = useState(false);
   //Url validation
   const [urlIsValid, setUrlIsValid] = useState(false);
+  const [titleHasContent, setTitleHasContent] = useState(false);
 
   const urlregexCheck = (urlString: string)=> {
     const urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
@@ -452,15 +453,16 @@ const MyLinks = (props: IMyLinksProps) => {
                             label="Tittel"
                             defaultValue={o.Title}
                             className={styles.editInputFields}
-                            onChange={(e: any) =>
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                               setCurrentForm({
                                 ...currentForm,
                                 Title: e.target.value,
-                              })
-                            }
+                              });
+                              setTitleHasContent(e.target.value.length > 0);
+                            }}
                             name="Title"
                            />
-                           <br />
+                            {titleHasContent ? <br /> : <span>Tittel må fylles ut</span>}
                         </div>
                         <div className={styles.editFields}>
                         <TextField
@@ -477,7 +479,7 @@ const MyLinks = (props: IMyLinksProps) => {
                         name="Link"
                         placeholder="https://"
                       />
-                           Url må starte med https:// eller http://
+                           {urlIsValid ? <br /> : <span>Ugyldig url</span>}
                         </div>
                         <div className={styles.iconField}>
                           <Icon
@@ -511,7 +513,7 @@ const MyLinks = (props: IMyLinksProps) => {
                         </div>
                         <div className={styles.editButtonsContainer}>
                           <PrimaryButton
-                            disabled={urlIsValid ? false : true }
+                            disabled={urlIsValid && titleHasContent ? false : true }
                             onClick={() => {
                               // eslint-disable-next-line no-unused-expressions
                               o.add
@@ -524,9 +526,6 @@ const MyLinks = (props: IMyLinksProps) => {
                           >
                             Lagre
                           </PrimaryButton>
-                          <DefaultButton onClick={() => console.log(urlIsValid)}>
-                            Test
-                          </DefaultButton>
                           <DefaultButton
                             onClick={() => {
                               cancelButton();
