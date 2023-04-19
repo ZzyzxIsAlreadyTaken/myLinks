@@ -56,6 +56,21 @@ const MyLinks = (props: IMyLinksProps) => {
   const [showEgendefinerte, setshowEgendefinerte] = useState(false);
   const [showFelleslenker, setshowFelleslenker] = useState(false);
   const [showLagreSorteringsButton, setShowLagreSorteringsButton] = useState(false);
+  //Url validation
+  const [urlIsValid, setUrlIsValid] = useState(false);
+
+  const urlregexCheck = (urlString: string)=> {
+    const urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
+    '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
+  return !!urlPattern.test(urlString);
+}
+
+
+
 
   const _sp: SPFI = getSP(props.context);
   const [batchedSP, execute] = _sp.batched();
@@ -448,22 +463,22 @@ const MyLinks = (props: IMyLinksProps) => {
                            <br />
                         </div>
                         <div className={styles.editFields}>
-                          <TextField
-                            label="Url"
-                            defaultValue={o.Link}
-                            className={styles.editInputFields}
-                            onChange={(e: any) =>
-                              setCurrentForm({
-                                ...currentForm,
-                                Link: e.target.value,
-                              })
-                            }
-                            name="Link"
-                            placeholder="https://"
-                           />
+                        <TextField
+                        label="Url"
+                        defaultValue={o.Link}
+                        className={styles.editInputFields}
+                        value={currentForm.Link}  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          setCurrentForm({
+                            ...currentForm,
+                            Link: e.target.value,
+                          });
+                          setUrlIsValid(urlregexCheck(e.target.value));
+                        }}
+                        name="Link"
+                        placeholder="https://"
+                      />
                            Url må starte med https:// eller http://
                         </div>
-                        Lashnan er 
                         <div className={styles.iconField}>
                           <Icon
                             iconName={currentIcon}
@@ -496,6 +511,7 @@ const MyLinks = (props: IMyLinksProps) => {
                         </div>
                         <div className={styles.editButtonsContainer}>
                           <PrimaryButton
+                            disabled={urlIsValid ? false : true }
                             onClick={() => {
                               // eslint-disable-next-line no-unused-expressions
                               o.add
@@ -508,6 +524,9 @@ const MyLinks = (props: IMyLinksProps) => {
                           >
                             Lagre
                           </PrimaryButton>
+                          <DefaultButton onClick={() => console.log(urlIsValid)}>
+                            Test
+                          </DefaultButton>
                           <DefaultButton
                             onClick={() => {
                               cancelButton();
