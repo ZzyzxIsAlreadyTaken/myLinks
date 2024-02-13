@@ -28,20 +28,19 @@ initializeIcons();
 const addLinkIcon: IIconProps = { iconName: "AddLink" };
 const addEditIcon: IIconProps = { iconName: "Edit" };
 const addEdit2Icon: IIconProps = {
-  iconName: 'Edit',
-  styles: {root: {color: "green", fontColor: "green", }
-},
-  className: styles.editButtonIcon
+  iconName: "Edit",
+  styles: { root: { color: "green", fontColor: "green" } },
+  className: styles.editButtonIcon,
 };
 const addDeleteIcon: IIconProps = { iconName: "Delete" };
 const cancel: IIconProps = { iconName: "Cancel" };
-const ChevronDownIcon: IIconProps = { iconName: "ChevronDown"}
-const ChevronUpIcon: IIconProps = { iconName: "ChevronUp"}
+const ChevronDownIcon: IIconProps = { iconName: "ChevronDown" };
+const ChevronUpIcon: IIconProps = { iconName: "ChevronUp" };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const MyLinks = (props: IMyLinksProps) => {
   // * Hooks
-   //Mylinks Items
+  //Mylinks Items
   const [myLinksItems, setMyLinksItems] = useState<IMYLINKS[]>([]);
   const [DeleteInfo, setDeleteInfo] = useState("");
   const [currentIcon, setIcon] = useState("Link");
@@ -55,27 +54,28 @@ const MyLinks = (props: IMyLinksProps) => {
   const [newLinkFromList, setNewLinkFromList] = useState(false);
   const [showEgendefinerte, setshowEgendefinerte] = useState(false);
   const [showFelleslenker, setshowFelleslenker] = useState(false);
-  const [showLagreSorteringsButton, setShowLagreSorteringsButton] = useState(false);
+  const [showLagreSorteringsButton, setShowLagreSorteringsButton] =
+    useState(false);
   //Url validation
   const [urlIsValid, setUrlIsValid] = useState(false);
   const [titleHasContent, setTitleHasContent] = useState(false);
 
-  const urlregexCheck = (urlString: string)=> {
-    const urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
-    '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
-  return !!urlPattern.test(urlString);
-}
-
-
-
+  const urlregexCheck = (urlString: string) => {
+    const urlPattern = new RegExp(
+      "^(https?:\\/\\/)?" + // validate protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
+    ); // validate fragment locator
+    return !!urlPattern.test(urlString);
+  };
 
   const _sp: SPFI = getSP(props.context);
   const [batchedSP, execute] = _sp.batched();
-  
+
   function addItemState(): void {
     const newItem = {} as IMYLINKS;
 
@@ -89,8 +89,8 @@ const MyLinks = (props: IMyLinksProps) => {
     let lastItemValueInnewMyLinks = 0;
 
     if (newMyLinks.length > 0) {
-      lastItemValueInnewMyLinks = newMyLinks[newMyLinks.length -1].Sortering
-    } 
+      lastItemValueInnewMyLinks = newMyLinks[newMyLinks.length - 1].Sortering;
+    }
 
     newMyLinks.push(newItem);
     newItem.edit = true;
@@ -104,7 +104,7 @@ const MyLinks = (props: IMyLinksProps) => {
     setMyLinksItems(newMyLinks);
   }
 
-  function closeEditForms(): void{
+  function closeEditForms(): void {
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         item.edit = false;
@@ -113,7 +113,7 @@ const MyLinks = (props: IMyLinksProps) => {
     ];
     setMyLinksItems(newMyLinks);
   }
-    const getMyLinksItems = async () : Promise<void> => {
+  const getMyLinksItems = async (): Promise<void> => {
     console.log("context", _sp);
     const items = _sp.web.lists
       .getById(props.listGuid)
@@ -132,7 +132,7 @@ const MyLinks = (props: IMyLinksProps) => {
           openinnewtab: item.openinnewtab,
           edit: false,
           add: false,
-          Sortering: item.Sortering
+          Sortering: item.Sortering,
         };
       })
     );
@@ -141,7 +141,12 @@ const MyLinks = (props: IMyLinksProps) => {
   async function createItemInList(): Promise<void> {
     const list = _sp.web.lists.getById(props.listGuid);
     console.log(list);
-    console.log(currentForm.Title, currentIcon, currentForm.Link, currentForm.Sortering);
+    console.log(
+      currentForm.Title,
+      currentIcon,
+      currentForm.Link,
+      currentForm.Sortering
+    );
     await list.items.add({
       Title: currentForm.Title,
       Icon: currentIcon,
@@ -168,14 +173,13 @@ const MyLinks = (props: IMyLinksProps) => {
     //   Id: null,
     //   Title: currentForm.Title,
     //   Link: currentForm.Link,
-    //   Icon: currentIcon, 
+    //   Icon: currentIcon,
     //   openinnewtab: currentForm.openinnewtab,
     //   edit: false,
     //   add: false,
     //   Sortering: currentForm.Sortering
     // })
     // console.log(newMyLinks[newMyLinks.length -1])
-    
   }
 
   function cancelButton(): void {
@@ -207,47 +211,52 @@ const MyLinks = (props: IMyLinksProps) => {
     setIcon(newMyLinks[index].Icon);
     setMyLinksItems(newMyLinks);
   }
-  
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const saveMultipleListItems = (arr: any): void => {
-    console.log("-------Kjører saveMultipleListItems---------")
-    const list =  batchedSP.web.lists.getById(props.listGuid);
-    arr.forEach(async (item: { Title: any; Sortering: any; Id: number; }, index: number) => {
-      console.log(item.Title + item.Sortering)
-       await list.items.getById(item.Id).update({ 
-        Sortering: index + 1
-      }).then(b => {
-      console.log("sorterer:", b);
-      });
-      // Executes the batched calls
-      
-    });
+    console.log("-------Kjører saveMultipleListItems---------");
+    const list = batchedSP.web.lists.getById(props.listGuid);
+    arr.forEach(
+      async (
+        item: { Title: any; Sortering: any; Id: number },
+        index: number
+      ) => {
+        console.log(item.Title + item.Sortering);
+        await list.items
+          .getById(item.Id)
+          .update({
+            Sortering: index + 1,
+          })
+          .then((b) => {
+            console.log("sorterer:", b);
+          });
+        // Executes the batched calls
+      }
+    );
     // eslint-disable-next-line no-void
     void execute();
     setMyLinksItems(arr);
-  }
+  };
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  function deleteItem(id: number, title: string){
-    console.log("-------Kjører deleteITem---------")
+  function deleteItem(id: number, title: string) {
+    console.log("-------Kjører deleteITem---------");
     const list = _sp.web.lists.getById(props.listGuid);
     // eslint-disable-next-line no-void
     void list.items.getById(id).delete();
-    
-    const removedItem = myLinksItems.find(item => item.Id === id)
-    console.log("Fjernet lenke: ",removedItem.Sortering + removedItem.Title)  
 
-    const filteredLinks = myLinksItems.filter((a) => a.Id !== id)
-    
-    console.log("Filteredlinks ", filteredLinks)
+    const removedItem = myLinksItems.find((item) => item.Id === id);
+    console.log("Fjernet lenke: ", removedItem.Sortering + removedItem.Title);
 
+    const filteredLinks = myLinksItems.filter((a) => a.Id !== id);
 
-     console.log("MyLinksItems ", myLinksItems);
+    console.log("Filteredlinks ", filteredLinks);
+
+    console.log("MyLinksItems ", myLinksItems);
     saveMultipleListItems(filteredLinks);
-  
-    
+
     // eslint-disable-next-line no-void
-    
+
     const deleteInfoTXT = "Du har slettet: " + title;
     setDeleteInfo(deleteInfoTXT);
   }
@@ -277,7 +286,6 @@ const MyLinks = (props: IMyLinksProps) => {
     newMyLinks[index].openinnewtab = currentForm.openinnewtab;
     newMyLinks[index].Icon = currentIcon;
 
-
     setMyLinksItems(newMyLinks);
   }
 
@@ -286,7 +294,7 @@ const MyLinks = (props: IMyLinksProps) => {
     []
   );
 
-  const getMyAdminLinksItems = async () : Promise<void> => {
+  const getMyAdminLinksItems = async (): Promise<void> => {
     console.log("context", _sp);
     const items = _sp.web.lists
       .getById(props.listGuid2)
@@ -303,31 +311,29 @@ const MyLinks = (props: IMyLinksProps) => {
           Link: item.Link.Url,
           openinnewtab: item.openinnewtab,
           Valgfri: item.Valgfri,
-          Sortering: item.Sortering
+          Sortering: item.Sortering,
         };
       })
     );
   };
 
-  function sortLinks(index:number, sortUp:boolean){
-
+  function sortLinks(index: number, sortUp: boolean) {
     const newMyLinks = [
       ...myLinksItems.map((item) => {
         return item;
       }),
     ];
-    if(sortUp) {
-      newMyLinks[index].Sortering =  newMyLinks[index + 0].Sortering + 1 
-      newMyLinks[index + 1].Sortering = newMyLinks[index + 1].Sortering - 1
+    if (sortUp) {
+      newMyLinks[index].Sortering = newMyLinks[index + 0].Sortering + 1;
+      newMyLinks[index + 1].Sortering = newMyLinks[index + 1].Sortering - 1;
     } else {
-      newMyLinks[index].Sortering =  newMyLinks[index + 0].Sortering + - 1 
-      newMyLinks[index + - 1].Sortering = newMyLinks[index + - 1].Sortering + 1
+      newMyLinks[index].Sortering = newMyLinks[index + 0].Sortering + -1;
+      newMyLinks[index + -1].Sortering = newMyLinks[index + -1].Sortering + 1;
     }
-    
-    
+
     newMyLinks.sort((s1, s2) => {
       return s1.Sortering - s2.Sortering;
-  });
+    });
 
     setMyLinksItems(newMyLinks);
     setShowLagreSorteringsButton(true);
@@ -353,13 +359,17 @@ const MyLinks = (props: IMyLinksProps) => {
     }
   }, [props]);
 
-  const optionsArray = myAdminLinksItems.filter((item) => {if (item.Valgfri === true){return {item}} }).map(item => ({text: item.Title, key: item.Id}))
-  
-  const predefinedLinksOptions: IDropdownOption[] = optionsArray
-  
-  
-  return (
+  const optionsArray = myAdminLinksItems
+    .filter((item) => {
+      if (item.Valgfri === true) {
+        return { item };
+      }
+    })
+    .map((item) => ({ text: item.Title, key: item.Id }));
 
+  const predefinedLinksOptions: IDropdownOption[] = optionsArray;
+
+  return (
     <>
       {props.listGuid && props.listGuid2 ? (
         <>
@@ -368,7 +378,7 @@ const MyLinks = (props: IMyLinksProps) => {
             title={props.title}
             updateProperty={props.updateProperty}
           />
-          
+
           <Modal
             titleAriaId={titleId}
             isOpen={isModalOpen}
@@ -386,20 +396,29 @@ const MyLinks = (props: IMyLinksProps) => {
                 hideModal();
                 void getMyLinksItems();
               }}
-             />
+            />
             <div className={styles.modalWrapper}>
               <h3>Rediger mine lenker</h3>
               <ActionButton
                 iconProps={addLinkIcon}
-                onClick={() => {addItemState(); newLinkFromList ? setNewLinkFromList(!newLinkFromList) : ""; setIcon("Link"); setDeleteInfo("")}}
+                onClick={() => {
+                  addItemState();
+                  newLinkFromList ? setNewLinkFromList(!newLinkFromList) : "";
+                  setIcon("Link");
+                  setDeleteInfo("");
+                }}
                 className={styles.newButtons}
               >
                 Ny egendefinert lenke
               </ActionButton>
-             
+
               <ActionButton
                 iconProps={addLinkIcon}
-                onClick={() => {setNewLinkFromList(!newLinkFromList);closeEditForms();setDeleteInfo("")}}
+                onClick={() => {
+                  setNewLinkFromList(!newLinkFromList);
+                  closeEditForms();
+                  setDeleteInfo("");
+                }}
                 className={styles.newButtons}
               >
                 Ny lenke fra liste
@@ -414,9 +433,17 @@ const MyLinks = (props: IMyLinksProps) => {
                     listGuid={props.listGuid}
                     listGuid2={props.listGuid2}
                     context={props.context}
-                   />
+                  />
                   {/* eslint-disable-next-line no-void */}
-                  <DefaultButton className={styles.lukkButton} onClick={() => {setNewLinkFromList(!newLinkFromList); void getMyLinksItems()}}>Lukk</DefaultButton>
+                  <DefaultButton
+                    className={styles.lukkButton}
+                    onClick={() => {
+                      setNewLinkFromList(!newLinkFromList);
+                      void getMyLinksItems();
+                    }}
+                  >
+                    Lukk
+                  </DefaultButton>
                 </div>
               ) : (
                 ""
@@ -427,20 +454,50 @@ const MyLinks = (props: IMyLinksProps) => {
                   <div key={index}>
                     {o.Title ? (
                       <>
-                        <Icon iconName={o.Icon}/>
+                        <Icon iconName={o.Icon} />
                         <span className={styles.modalLinkTitle}>{o.Title}</span>
                         <IconButton
                           iconProps={addEditIcon}
                           onClick={() => getEditItem(o.Id, index)}
-                         />
+                        />
                         <IconButton
                           iconProps={addDeleteIcon}
                           // eslint-disable-next-line no-void
-                          onClick={() => {void deleteItem(o.Id, o.Title);}}
-                         /><span className={styles.sortChevronButtons}>
-                        {index === 0 ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)} /></> : "" }
-                        {index > 0 ? <><IconButton iconProps={ChevronUpIcon} onClick={()=>sortLinks(index, false)} /></> : "" }
-                        {(index > 0 && index < myLinksItems.length - 1) ? <><IconButton iconProps={ChevronDownIcon} onClick={()=>sortLinks(index, true)} /></> : "" }
+                          onClick={() => {
+                            void deleteItem(o.Id, o.Title);
+                          }}
+                        />
+                        <span className={styles.sortChevronButtons}>
+                          {index === 0 ? (
+                            <>
+                              <IconButton
+                                iconProps={ChevronDownIcon}
+                                onClick={() => sortLinks(index, true)}
+                              />
+                            </>
+                          ) : (
+                            ""
+                          )}
+                          {index > 0 ? (
+                            <>
+                              <IconButton
+                                iconProps={ChevronUpIcon}
+                                onClick={() => sortLinks(index, false)}
+                              />
+                            </>
+                          ) : (
+                            ""
+                          )}
+                          {index > 0 && index < myLinksItems.length - 1 ? (
+                            <>
+                              <IconButton
+                                iconProps={ChevronDownIcon}
+                                onClick={() => sortLinks(index, true)}
+                              />
+                            </>
+                          ) : (
+                            ""
+                          )}
                         </span>
                       </>
                     ) : (
@@ -453,7 +510,9 @@ const MyLinks = (props: IMyLinksProps) => {
                             label="Tittel"
                             defaultValue={o.Title}
                             className={styles.editInputFields}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
                               setCurrentForm({
                                 ...currentForm,
                                 Title: e.target.value,
@@ -461,31 +520,38 @@ const MyLinks = (props: IMyLinksProps) => {
                               setTitleHasContent(e.target.value.length > 0);
                             }}
                             name="Title"
-                           />
-                            {titleHasContent ? <br /> : <span>Tittel må fylles ut</span>}
+                          />
+                          {titleHasContent ? (
+                            <br />
+                          ) : (
+                            <span>Tittel må fylles ut</span>
+                          )}
                         </div>
                         <div className={styles.editFields}>
-                        <TextField
-                        label="Url"
-                        defaultValue={o.Link}
-                        className={styles.editInputFields}
-                        value={currentForm.Link}  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          setCurrentForm({
-                            ...currentForm,
-                            Link: e.target.value,
-                          });
-                          setUrlIsValid(urlregexCheck(e.target.value));
-                        }}
-                        name="Link"
-                        placeholder="https://"
-                      />
-                           {urlIsValid ? <br /> : <span>Ugyldig url</span>}
+                          <TextField
+                            label="Url"
+                            defaultValue={o.Link}
+                            className={styles.editInputFields}
+                            value={currentForm.Link}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              setCurrentForm({
+                                ...currentForm,
+                                Link: e.target.value,
+                              });
+                              setUrlIsValid(urlregexCheck(e.target.value));
+                            }}
+                            name="Link"
+                            placeholder="https://"
+                          />
+                          {urlIsValid ? <br /> : <span>Ugyldig url</span>}
                         </div>
                         <div className={styles.iconField}>
                           <Icon
                             iconName={currentIcon}
                             className={styles.editIcon}
-                           />
+                          />
                         </div>
                         <div className={styles.iconField}>
                           <IconPicker
@@ -509,18 +575,20 @@ const MyLinks = (props: IMyLinksProps) => {
                               })
                             }
                             name="openinnewtab"
-                           />
+                          />
                         </div>
                         <div className={styles.editButtonsContainer}>
                           <PrimaryButton
-                            disabled={urlIsValid && titleHasContent ? false : true }
+                            disabled={
+                              urlIsValid && titleHasContent ? false : true
+                            }
                             onClick={() => {
                               // eslint-disable-next-line no-unused-expressions
                               o.add
-                                // eslint-disable-next-line no-void
-                                ? void createItemInList()
-                                // eslint-disable-next-line no-void
-                                : void saveItem(o.Id, index);
+                                ? // eslint-disable-next-line no-void
+                                  void createItemInList()
+                                : // eslint-disable-next-line no-void
+                                  void saveItem(o.Id, index);
                             }}
                             className={styles.saveButtons}
                           >
@@ -544,7 +612,18 @@ const MyLinks = (props: IMyLinksProps) => {
               <br />
               <div className={styles.deleteInfo}>{DeleteInfo}</div>
               {/*eslint-disable-next-line no-void*/}
-              {showLagreSorteringsButton ? <DefaultButton onClick={()=>{void saveMultipleListItems(myLinksItems); setShowLagreSorteringsButton(false)}}>Lagre ny sortering</DefaultButton>: ""}
+              {showLagreSorteringsButton ? (
+                <DefaultButton
+                  onClick={() => {
+                    void saveMultipleListItems(myLinksItems);
+                    setShowLagreSorteringsButton(false);
+                  }}
+                >
+                  Lagre ny sortering
+                </DefaultButton>
+              ) : (
+                ""
+              )}
             </div>
           </Modal>
         </>
@@ -553,79 +632,115 @@ const MyLinks = (props: IMyLinksProps) => {
       )}
       {/* Adminlinks */}
       {props.listGuid && props.listGuid2 ? (
-        <div className={styles.linkHeader}>{props.listTitleAdminlinks} <Icon style={{cursor: "pointer"}} onClick={() => setshowFelleslenker(!showFelleslenker)} iconName={showFelleslenker ? "ChevronDown" : "ChevronUp"} /></div>
+        <div className={styles.linkHeader}>
+          {props.listTitleAdminlinks}{" "}
+          <Icon
+            style={{ cursor: "pointer" }}
+            onClick={() => setshowFelleslenker(!showFelleslenker)}
+            iconName={showFelleslenker ? "ChevronUp" : "ChevronDown"}
+          />
+        </div>
       ) : (
         ""
       )}
-      
-      {props.listGuid && props.listGuid2
-        ? (showFelleslenker ? <>{myAdminLinksItems.filter((item) => {if (item.Valgfri == false){return {item}} }).map((o: IMYADMINLINKS, index: number) => { 
-            return ( 
-              <div key={index}>
-                <Icon iconName="Link" />
-                {o.openinnewtab ? (
-                  <>
-                    {" "}
-                    <a href={o.Link} rel="noreferrer" target="_blank">
-                      {o.Title}
-                    </a>
-                  </>
-                ) : (
-                  <> 
-                    {" "}
-                    <a href={o.Link} rel="noreferrer" target="_self">
-                      {o.Title}
-                    </a>
-                  </>
-                )}
-              </div>
-            );
-          })
-      }</> : ""): ""}
+
+      {props.listGuid && props.listGuid2 ? (
+        showFelleslenker ? (
+          <>
+            {myAdminLinksItems
+              .filter((item) => {
+                if (item.Valgfri == false) {
+                  return { item };
+                }
+              })
+              .map((o: IMYADMINLINKS, index: number) => {
+                return (
+                  <div key={index}>
+                    <Icon iconName="Link" />
+                    {o.openinnewtab ? (
+                      <>
+                        {" "}
+                        <a href={o.Link} rel="noreferrer" target="_blank">
+                          {o.Title}
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        <a href={o.Link} rel="noreferrer" target="_self">
+                          {o.Title}
+                        </a>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+          </>
+        ) : (
+          ""
+        )
+      ) : (
+        ""
+      )}
       {/* My links */}
       {props.listGuid && props.listGuid2 ? (
-        <div className={styles.linkHeader}>{props.listTitleMylinks} <Icon style={{cursor: "pointer"}} onClick={() => setshowEgendefinerte(!showEgendefinerte)} iconName={showEgendefinerte ? "ChevronDown" : "ChevronUp"} /></div>
+        <div className={styles.linkHeader}>
+          {props.listTitleMylinks}{" "}
+          <Icon
+            style={{ cursor: "pointer" }}
+            onClick={() => setshowEgendefinerte(!showEgendefinerte)}
+            iconName={showEgendefinerte ? "ChevronUp" : "ChevronDown"}
+          />
+        </div>
       ) : (
         ""
       )}
-      {props.listGuid && props.listGuid2 ? (<>{showEgendefinerte ?  <>{myLinksItems.map((o: IMYLINKS, index: number) => {
-          return (
-            <div key={index}>
-              <Icon iconName={o.Icon} />
-              {o.openinnewtab ? (
-                <>
-                  {" "}
-                  <a href={o.Link} rel="noreferrer" target="_blank">
-                    {o.Title}
-                  </a>
-                </>
-              ) : (
-                <>
-                  {" "}
-                  <a href={o.Link} rel="noreferrer" target="_self">
-                    {o.Title}
-                  </a>
-                </>
-              )}
-            </div>
-          );
-        })}</>  : ""}
-       
-        <br />
-        <ActionButton
-        className={`${styles.button} ms-fontColor-black`}
-        shape="rounded"
-        iconProps={addEdit2Icon}
-        onClick={() => {
-          showModal();
-          setDeleteInfo("");
-          setNewLinkFromList(false);
-          setShowLagreSorteringsButton(false);
-        }}
-      >
-        Rediger lenker
-      </ActionButton>
-      </>
+      {props.listGuid && props.listGuid2 ? (
+        <>
+          {showEgendefinerte ? (
+            <>
+              {myLinksItems.map((o: IMYLINKS, index: number) => {
+                return (
+                  <div key={index}>
+                    <Icon iconName={o.Icon} />
+                    {o.openinnewtab ? (
+                      <>
+                        {" "}
+                        <a href={o.Link} rel="noreferrer" target="_blank">
+                          {o.Title}
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        <a href={o.Link} rel="noreferrer" target="_self">
+                          {o.Title}
+                        </a>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            ""
+          )}
+
+          <br />
+          <ActionButton
+            className={`${styles.button} ms-fontColor-black`}
+            shape="rounded"
+            iconProps={addEdit2Icon}
+            onClick={() => {
+              showModal();
+              setDeleteInfo("");
+              setNewLinkFromList(false);
+              setShowLagreSorteringsButton(false);
+            }}
+          >
+            Rediger lenker
+          </ActionButton>
+        </>
       ) : (
         <Placeholder
           iconName="Edit"
