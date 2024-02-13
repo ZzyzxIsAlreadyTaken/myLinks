@@ -54,6 +54,7 @@ const MyLinks = (props: IMyLinksProps) => {
   const [newLinkFromList, setNewLinkFromList] = useState(false);
   const [showEgendefinerte, setshowEgendefinerte] = useState(false);
   const [showFelleslenker, setshowFelleslenker] = useState(false);
+  const [showFelleslenkerHeader, setshowFelleslenkerHeader] = useState(false);
   const [showLagreSorteringsButton, setShowLagreSorteringsButton] =
     useState(false);
   //Url validation
@@ -631,14 +632,22 @@ const MyLinks = (props: IMyLinksProps) => {
         ""
       )}
       {/* Adminlinks */}
-      {props.listGuid && props.listGuid2 ? (
+      {props.listGuid &&
+      props.listGuid2 &&
+      myAdminLinksItems.every((item) => item.Valgfri !== true) ? (
         <div className={styles.linkHeader}>
-          {props.listTitleAdminlinks}{" "}
+          {props.listTitleAdminlinks}
+          {" gg"}
           <Icon
             style={{ cursor: "pointer" }}
             onClick={() => setshowFelleslenker(!showFelleslenker)}
             iconName={showFelleslenker ? "ChevronUp" : "ChevronDown"}
           />
+
+          {console.log(
+            "trueorfalse:" +
+              myAdminLinksItems.every((item) => item.Valgfri !== false)
+          )}
         </div>
       ) : (
         ""
