@@ -452,10 +452,13 @@ const MyLinks = (props: IMyLinksProps) => {
 
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
-                  <div key={index}>
+                  <div key={index} className={styles.links}>
                     {o.Title ? (
                       <>
-                        <Icon iconName={o.Icon} />
+                        <Icon
+                          iconName={o.Icon}
+                          className={styles.webpartLinkIcon}
+                        />
                         <span className={styles.modalLinkTitle}>{o.Title}</span>
                         <IconButton
                           iconProps={addEditIcon}
@@ -636,18 +639,12 @@ const MyLinks = (props: IMyLinksProps) => {
       props.listGuid2 &&
       myAdminLinksItems.every((item) => item.Valgfri !== true) ? (
         <div className={styles.linkHeader}>
-          {props.listTitleAdminlinks}
-          {" gg"}
+          {props.listTitleAdminlinks}{" "}
           <Icon
             style={{ cursor: "pointer" }}
             onClick={() => setshowFelleslenker(!showFelleslenker)}
             iconName={showFelleslenker ? "ChevronUp" : "ChevronDown"}
           />
-
-          {console.log(
-            "trueorfalse:" +
-              myAdminLinksItems.every((item) => item.Valgfri !== false)
-          )}
         </div>
       ) : (
         ""
@@ -664,7 +661,7 @@ const MyLinks = (props: IMyLinksProps) => {
               })
               .map((o: IMYADMINLINKS, index: number) => {
                 return (
-                  <div key={index}>
+                  <div key={index} className={styles.links}>
                     <Icon iconName="Link" />
                     {o.openinnewtab ? (
                       <>
@@ -710,8 +707,11 @@ const MyLinks = (props: IMyLinksProps) => {
             <>
               {myLinksItems.map((o: IMYLINKS, index: number) => {
                 return (
-                  <div key={index}>
-                    <Icon iconName={o.Icon} />
+                  <div key={index} className={styles.links}>
+                    <Icon
+                      iconName={o.Icon}
+                      className={styles.webpartLinkIcon}
+                    />
                     {o.openinnewtab ? (
                       <>
                         {" "}
