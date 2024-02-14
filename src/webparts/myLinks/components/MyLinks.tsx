@@ -455,54 +455,74 @@ const MyLinks = (props: IMyLinksProps) => {
                   <div key={index} className={styles.links}>
                     {o.Title ? (
                       <>
-                        <Icon
-                          iconName={o.Icon}
-                          className={styles.webpartLinkIcon}
-                        />
-                        <span className={styles.modalLinkTitle}>{o.Title}</span>
-                        <IconButton
-                          iconProps={addEditIcon}
-                          onClick={() => getEditItem(o.Id, index)}
-                        />
-                        <IconButton
-                          iconProps={addDeleteIcon}
-                          // eslint-disable-next-line no-void
-                          onClick={() => {
-                            void deleteItem(o.Id, o.Title);
-                          }}
-                        />
-                        <span className={styles.sortChevronButtons}>
-                          {index === 0 ? (
-                            <>
-                              <IconButton
-                                iconProps={ChevronDownIcon}
-                                onClick={() => sortLinks(index, true)}
-                              />
-                            </>
-                          ) : (
-                            ""
-                          )}
-                          {index > 0 ? (
-                            <>
-                              <IconButton
-                                iconProps={ChevronUpIcon}
-                                onClick={() => sortLinks(index, false)}
-                              />
-                            </>
-                          ) : (
-                            ""
-                          )}
-                          {index > 0 && index < myLinksItems.length - 1 ? (
-                            <>
-                              <IconButton
-                                iconProps={ChevronDownIcon}
-                                onClick={() => sortLinks(index, true)}
-                              />
-                            </>
-                          ) : (
-                            ""
-                          )}
-                        </span>
+                        <div className={styles.modalTitleContainer}>
+                          <Icon
+                            iconName={o.Icon}
+                            className={styles.modalLinkIcon}
+                          />
+                          <span className={styles.modalLinkTitle}>
+                            {o.Title}
+                          </span>
+                        </div>
+                        <div className={styles.modalIconContainer}>
+                          <IconButton
+                            iconProps={addEditIcon}
+                            onClick={() => getEditItem(o.Id, index)}
+                          />
+                          <IconButton
+                            iconProps={addDeleteIcon}
+                            // eslint-disable-next-line no-void
+                            onClick={() => {
+                              void deleteItem(o.Id, o.Title);
+                            }}
+                          />
+                          <span className={styles.sortChevronButtons}>
+                            {index === 0 ? (
+                              <>
+                                <IconButton
+                                  iconProps={ChevronUpIcon}
+                                  disabled={true}
+                                />
+                                <IconButton
+                                  iconProps={ChevronDownIcon}
+                                  onClick={() => sortLinks(index, true)}
+                                />
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            {index > 0 ? (
+                              <>
+                                <IconButton
+                                  iconProps={ChevronUpIcon}
+                                  onClick={() => sortLinks(index, false)}
+                                />
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            {index === myLinksItems.length - 1 ? (
+                              <>
+                                <IconButton
+                                  iconProps={ChevronDownIcon}
+                                  disabled={true}
+                                />
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            {index > 0 && index < myLinksItems.length - 1 ? (
+                              <>
+                                <IconButton
+                                  iconProps={ChevronDownIcon}
+                                  onClick={() => sortLinks(index, true)}
+                                />
+                              </>
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </div>
                       </>
                     ) : (
                       ""
