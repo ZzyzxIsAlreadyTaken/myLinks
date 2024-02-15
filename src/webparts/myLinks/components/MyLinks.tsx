@@ -100,6 +100,7 @@ const MyLinks = (props: IMyLinksProps) => {
     newItem.Sortering = lastItemValueInnewMyLinks + 1;
     currentForm.Icon = "Link";
     currentForm.Sortering = newItem.Sortering;
+    currentForm.Link = "";
     console.log(newItem.Sortering);
     console.log(newMyLinks);
     setMyLinksItems(newMyLinks);
@@ -407,6 +408,8 @@ const MyLinks = (props: IMyLinksProps) => {
                   newLinkFromList ? setNewLinkFromList(!newLinkFromList) : "";
                   setIcon("Link");
                   setDeleteInfo("");
+                  setTitleHasContent(false);
+                  setUrlIsValid(false);
                 }}
                 className={styles.newButtons}
               >
@@ -467,7 +470,11 @@ const MyLinks = (props: IMyLinksProps) => {
                         <div className={styles.modalIconContainer}>
                           <IconButton
                             iconProps={addEditIcon}
-                            onClick={() => getEditItem(o.Id, index)}
+                            onClick={() => {
+                              getEditItem(o.Id, index);
+                              setUrlIsValid(true);
+                              setTitleHasContent(true);
+                            }}
                           />
                           <IconButton
                             iconProps={addDeleteIcon}
@@ -546,7 +553,9 @@ const MyLinks = (props: IMyLinksProps) => {
                             name="Title"
                           />
                           {titleHasContent ? (
-                            <br />
+                            <>
+                              <br />
+                            </>
                           ) : (
                             <span>Tittel må fylles ut</span>
                           )}

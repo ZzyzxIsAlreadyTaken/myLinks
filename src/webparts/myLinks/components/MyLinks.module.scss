@@ -58,7 +58,6 @@
 
 .modalLinkTitle{
   margin-left: 10px;
-  margin-top: auto;
 }
 
 .deleteInfo{
@@ -85,7 +84,6 @@
 .modalLinkIcon{
   font-size: 20px;
   margin-right: 5px;
-  margin-top: auto;
 }
 
 
@@ -102,8 +100,9 @@
   grid-template-columns: auto auto auto auto;
   background-color: fade-in($color: #f5f5f5, $amount: 1);
   animation: fadeIn 1s;
-  padding: 10px;
+  padding: 20px;
   margin: 10px;
+  border-radius: 5px;
 }
 
 .editFields{
