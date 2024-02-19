@@ -14,6 +14,7 @@ let arr: any = [];
 export interface IDropdownStates {
   singleValueDropdown: string;
   multiValueDropdown: any;
+  disabledButton: boolean;
 }
 
 export default class FluentUiDropdown extends React.Component<
@@ -31,6 +32,7 @@ export default class FluentUiDropdown extends React.Component<
     this.state = {
       singleValueDropdown: "",
       multiValueDropdown: [],
+      disabledButton: true,
     };
   }
 
@@ -50,7 +52,12 @@ export default class FluentUiDropdown extends React.Component<
       arr.indexOf(item.key) !== -1 && arr.splice(arr.indexOf(item.key), 1);
     }
     this.setState({ multiValueDropdown: arr });
-    console.log("Array:" + arr);
+    console.log("Arroy:" + arr);
+    if (arr.length === 0) {
+      this.setState({ disabledButton: true });
+    } else {
+      this.setState({ disabledButton: false });
+    }
   };
 
   private async Save(e: any) {
@@ -112,7 +119,6 @@ export default class FluentUiDropdown extends React.Component<
           onChange={this.onDropdownChange}
         />
         <br /> */}
-        {console.log(this.props.multiValueOptions)}
         <Dropdown
           placeholder="Legg til valgfrie lenker"
           defaultSelectedKeys={this.state.multiValueDropdown}
@@ -124,9 +130,11 @@ export default class FluentUiDropdown extends React.Component<
         <div>
           <br />
           <PrimaryButton
+            disabled={this.state.disabledButton}
             onClick={(e) => {
               void this.Save(e);
               this.forceUpdate();
+              this.setState({ disabledButton: true });
               //this.props.parentCallback(false); // Callback to parent that closes the dialog by setting the state in a parent hook to false
             }}
           >

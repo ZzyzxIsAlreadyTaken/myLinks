@@ -1,6 +1,6 @@
 {
-  "name": "my-links",
-  "version": "0.0.1",
+  "name": "ATEA-my-links",
+  "version": "1.1.0.0",
   "private": true,
   "main": "lib/index.js",
   "scripts": {
