@@ -1,7 +1,7 @@
 import * as React from "react";
 import styles from "./MyLinks.module.scss";
 import { IMyLinksProps } from "./IMyLinksProps";
-import { escape } from "@microsoft/sp-lodash-subset";
+import { escape, set } from "@microsoft/sp-lodash-subset";
 import { SPFI } from "@pnp/sp";
 import { useEffect, useState } from "react";
 import { IMYLINKS, IMYADMINLINKS } from "../../../interfaces";
@@ -371,6 +371,13 @@ const MyLinks = (props: IMyLinksProps) => {
 
   const predefinedLinksOptions: IDropdownOption[] = optionsArray;
 
+  // FluentUIDropdown callback function
+  const handleCallback = async (childdata: boolean): Promise<void> => {
+    // Update the name in the component's state
+    setNewLinkFromList(childdata);
+    await getMyLinksItems();
+  };
+
   return (
     <>
       {props.listGuid && props.listGuid2 ? (
@@ -437,6 +444,7 @@ const MyLinks = (props: IMyLinksProps) => {
                     listGuid={props.listGuid}
                     listGuid2={props.listGuid2}
                     context={props.context}
+                    parentCallback={handleCallback} //temporarily disabled in component because state is not updated correctly when adding link. Lukk button works correctly with updated state (showing all links in list)
                   />
                   {/* eslint-disable-next-line no-void */}
                   <DefaultButton
