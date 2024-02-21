@@ -3,7 +3,7 @@
   "solution": {
     "name": "my-links byATEA",
     "id": "e8abf931-c48a-4ba4-90bf-9d2a72a818c2",
-    "version": "1.1.0.0",
+    "version": "1.1.1.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
