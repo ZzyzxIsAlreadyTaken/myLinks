@@ -676,7 +676,7 @@ const MyLinks = (props: IMyLinksProps) => {
       {/* Adminlinks */}
       {props.listGuid &&
       props.listGuid2 &&
-      myAdminLinksItems.every((item) => item.Valgfri !== true) ? (
+      !myAdminLinksItems.every((item) => item.Valgfri === true) ? (
         <div className={styles.linkHeader}>
           {props.listTitleAdminlinks}{" "}
           <Icon
@@ -701,7 +701,7 @@ const MyLinks = (props: IMyLinksProps) => {
               .map((o: IMYADMINLINKS, index: number) => {
                 return (
                   <div key={index} className={styles.links}>
-                    <Icon iconName="Link" />
+                    <Icon iconName="Link" className={styles.webpartLinkIcon} />
                     {o.openinnewtab ? (
                       <>
                         {" "}
